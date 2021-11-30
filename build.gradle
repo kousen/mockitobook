@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'com.kousenit'
+version '1.0'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+String junitVersion = '5.8.1'
+String mockitoVersion = '4.0.0'
+String assertJVersion = '3.21.0'
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
+}
+
+test {
+    useJUnitPlatform()
+}
