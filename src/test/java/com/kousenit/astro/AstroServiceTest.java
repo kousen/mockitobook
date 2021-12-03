@@ -78,7 +78,22 @@ class AstroServiceTest {
         });
     }
 
+    // Own mock class -- MockGateway
+    @Test
+    void testAstroData_FakeGateway() {
+        service = new AstroService(new MockGateway());
+        Map<String, Long> astroData = service.getAstroData();
+        astroData.forEach((craft, number) -> {
+            System.out.println("There are " + number + " astronauts aboard " + craft);
+            assertAll(
+                    () -> assertThat(number).isGreaterThan(0),
+                    () -> assertThat(craft).isNotBlank()
+            );
+        });
+    }
+
     // Unit test with mock Gateway
+    @SuppressWarnings("unchecked")
     @Test
     void testAstroData_MockGateway() {
         // 1. Create a mock Gateway
