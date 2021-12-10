@@ -80,7 +80,7 @@ class AstroServiceTest {
 
     // Own mock class -- MockGateway
     @Test
-    void testAstroData_FakeGateway() {
+    void testAstroData_OwnMockGateway() {
         service = new AstroService(new MockGateway());
         Map<String, Long> astroData = service.getAstroData();
         astroData.forEach((craft, number) -> {
