@@ -83,6 +83,7 @@ class AstroServiceTest {
 
         // verify:
         then(gateway).should().getResponse();
+        then(gateway).shouldHaveNoMoreInteractions();
     }
 
     // Integration test -- no mocks
