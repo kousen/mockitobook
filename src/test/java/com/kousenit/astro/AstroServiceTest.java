@@ -6,28 +6,25 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AstroServiceTest {
     private final AstroResponse mockAstroResponse =
-            new AstroResponse(9, "Success", List.of(
+            new AstroResponse(7, "Success", List.of(
                     new Assignment("John Sheridan", "Babylon 5"),
                     new Assignment("Susan Ivanova", "Babylon 5"),
-                    new Assignment("James Holden", "Rocinante"),
-                    new Assignment("Naomi Nagata", "Rocinante"),
-                    new Assignment("Amos Burton", "Rocinante"),
                     new Assignment("Beckett Mariner", "USS Cerritos"),
                     new Assignment("Brad Boimler", "USS Cerritos"),
                     new Assignment("Sam Rutherford", "USS Cerritos"),
-                    new Assignment("D'Vana Tendi", "USS Cerritos")
+                    new Assignment("D'Vana Tendi", "USS Cerritos"),
+                    new Assignment("Ellen Ripley", "Nostromo")
             ));
 
     @Mock
@@ -50,10 +47,10 @@ class AstroServiceTest {
         // Check the results from the method under test
         assertThat(astroData)
                 .containsEntry("Babylon 5", 2L)
-                .containsEntry("Rocinante", 3L)
+                .containsEntry("Nostromo", 1L)
                 .containsEntry("USS Cerritos", 4L);
         astroData.forEach((craft, number) -> {
-            System.out.println("There are " + number + " astronauts aboard " + craft);
+            System.out.println(number + " astronauts aboard " + craft);
             assertAll(
                     () -> assertThat(number).isGreaterThan(0),
                     () -> assertThat(craft).isNotBlank()
@@ -64,13 +61,37 @@ class AstroServiceTest {
         then(gateway).should().getResponse();
     }
 
+    // Check network failure
+    @Test
+    void testAstroData_failedGateway() {
+        // given:
+        willReturn(new Failure<>(
+                new RuntimeException(new IOException("Network problems")
+        ))).given(gateway).getResponse();
+
+        // when:
+        Exception exception = assertThrows(
+                RuntimeException.class,
+                () -> service.getAstroData());
+
+        // then:
+        Throwable cause = exception.getCause();
+        assertAll(
+                () -> assertEquals(IOException.class, cause.getClass()),
+                () -> assertEquals("Network problems", cause.getMessage())
+        );
+
+        // verify:
+        then(gateway).should().getResponse();
+    }
+
     // Integration test -- no mocks
     @Test
     void testAstroData_RealGateway() {
         service = new AstroService(new AstroGateway());
         Map<String, Long> astroData = service.getAstroData();
         astroData.forEach((craft, number) -> {
-            System.out.println("There are " + number + " astronauts aboard " + craft);
+            System.out.println(number + " astronauts aboard " + craft);
             assertAll(
                     () -> assertThat(number).isGreaterThan(0),
                     () -> assertThat(craft).isNotBlank()
@@ -84,7 +105,7 @@ class AstroServiceTest {
         service = new AstroService(new MockGateway());
         Map<String, Long> astroData = service.getAstroData();
         astroData.forEach((craft, number) -> {
-            System.out.println("There are " + number + " astronauts aboard " + craft);
+            System.out.println(number + " astronauts aboard " + craft);
             assertAll(
                     () -> assertThat(number).isGreaterThan(0),
                     () -> assertThat(craft).isNotBlank()
@@ -110,11 +131,11 @@ class AstroServiceTest {
         Map<String, Long> astroData = service.getAstroData();
         assertThat(astroData)
                 .containsEntry("Babylon 5", 2L)
-                .containsEntry("Rocinante", 3L)
                 .containsEntry("USS Cerritos", 4L)
+                .containsEntry("Nostromo", 1L)
                 .hasSize(3);
         astroData.forEach((craft, number) -> {
-            System.out.println("There are " + number + " astronauts aboard " + craft);
+            System.out.println(number + " astronauts aboard " + craft);
             assertAll(
                     () -> assertThat(number).isGreaterThan(0),
                     () -> assertThat(craft).isNotBlank()

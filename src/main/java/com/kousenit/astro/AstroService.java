@@ -13,15 +13,27 @@ public class AstroService {
 
     public Map<String, Long> getAstroData() {
         var response = gateway.getResponse();
-        System.out.println(response);
-        if (response instanceof Success<AstroResponse> success) {
-            AstroResponse data = success.data();
-            return data.people().stream()
-                    .collect(Collectors.groupingBy(Assignment::craft, Collectors.counting()));
-        } else if (response instanceof Failure<AstroResponse> failure){
-            throw failure.exception();
-        } else {
-            throw new RuntimeException("Should never happen");
-        }
+
+        // Pattern matching for switch (Java 17 preview feature)
+        return switch (response) {
+            case Success<AstroResponse> success -> extractMap(success.data());
+            case Failure<AstroResponse> failure -> throw failure.exception();
+        };
+
+    // Without pattern matching on sealed classes:
+//        if (response instanceof Success<AstroResponse> success) {
+//            return extractMap(success.data());
+//        } else if (response instanceof Failure<AstroResponse> failure){
+//            throw failure.exception();
+//        } else {
+//            throw new RuntimeException("Remove when pattern matching for switch available");
+//        }
+    }
+
+    private Map<String, Long> extractMap(AstroResponse data) {
+        return data.people()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        Assignment::craft, Collectors.counting()));
     }
 }

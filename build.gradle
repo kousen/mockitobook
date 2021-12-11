@@ -28,6 +28,11 @@ dependencies {
     testImplementation "org.assertj:assertj-core:$assertJVersion"
 }
 
+tasks.withType(JavaCompile).configureEach {
+    it.options.compilerArgs.add('--enable-preview')
+}
+
 test {
     useJUnitPlatform()
+    jvmArgs(['--enable-preview'])
 }
