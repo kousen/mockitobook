@@ -9,10 +9,10 @@ class AstroGatewayTest {
 
     @Test
     void testDeserializeToRecords() {
-        Response<AstroResponse> response = gateway.getResponse();
-        System.out.println(response);
-        assertTrue(response instanceof Success<AstroResponse>);
-        AstroResponse data = ((Success<AstroResponse>) response).data();
+        Result<AstroResponse> result = gateway.getResponse();
+        System.out.println(result);
+        assertTrue(result instanceof Success<AstroResponse>);
+        AstroResponse data = ((Success<AstroResponse>) result).data();
         assertAll(
                 () -> assertTrue(data.number() >= 0),
                 () -> assertEquals(data.people().size(), data.number())

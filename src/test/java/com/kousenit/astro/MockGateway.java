@@ -4,7 +4,7 @@ import java.util.List;
 
 public class MockGateway implements Gateway<AstroResponse> {
     @Override
-    public Response<AstroResponse> getResponse() {
+    public Result<AstroResponse> getResponse() {
         return new Success<>(new AstroResponse(6, "Success",
                 List.of(new Assignment("Kathryn Janeway", "USS Voyager"),
                         new Assignment("Seven of Nine", "USS Voyager"),

@@ -21,7 +21,7 @@ public class AstroGateway implements Gateway<AstroResponse> {
     private final JsonMapper jsonMapper = new JsonMapper();
 
     @Override
-    public Response<AstroResponse> getResponse() {
+    public Result<AstroResponse> getResponse() {
         try {
             HttpResponse<String> httpResponse =
                     client.send(request, HttpResponse.BodyHandlers.ofString());
