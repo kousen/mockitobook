@@ -11,11 +11,16 @@ class AstroGatewayTest {
     void testDeserializeToRecords() {
         Result<AstroResponse> result = gateway.getResponse();
         System.out.println(result);
-        assertTrue(result instanceof Success<AstroResponse>);
-        AstroResponse data = ((Success<AstroResponse>) result).data();
-        assertAll(
-                () -> assertTrue(data.number() >= 0),
-                () -> assertEquals(data.people().size(), data.number())
-        );
+        switch (result) {
+            case Success<AstroResponse> astroSuccess -> {
+                AstroResponse data = astroSuccess.data();
+                assertAll(
+                        () -> assertTrue(data.number() >= 0),
+                        () -> assertEquals(data.people().size(), data.number())
+                );
+            }
+            case Failure<AstroResponse> astroFailure ->
+                    assertNotNull(astroFailure.exception());
+        }
     }
 }
