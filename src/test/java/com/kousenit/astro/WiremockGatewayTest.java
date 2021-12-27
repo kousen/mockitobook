@@ -19,16 +19,16 @@ public class WiremockGatewayTest {
                         {
                             "people": [
                                 {
-                                    "craft": "Babylon 5",
-                                    "name": "John Sheridan"
+                                    "craft": "Discovery One",
+                                    "name": "David Bowman"
                                 },
                                 {
-                                    "craft": "Babylon 5",
-                                    "name": "Susan Ivanova"
+                                    "craft": "Discovery One",
+                                    "name": "Frank Poole"
                                 },
                                 {
-                                    "craft": "Babylon 5",
-                                    "name": "Michael Garibaldi"
+                                    "craft": "Discovery One",
+                                    "name": "HAL 9000"
                                 }
                             ],
                             "message": "success",
