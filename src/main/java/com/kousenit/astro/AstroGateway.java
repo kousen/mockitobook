@@ -10,20 +10,32 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 
+@SuppressWarnings("HttpUrlsUsage")
 public class AstroGateway implements Gateway<AstroResponse> {
+    private static final String DEFAULT_URL = "http://api.open-notify.org/astros.json";
+    private final String url;
+
+    public AstroGateway() {
+        this(DEFAULT_URL);
+    }
+
+    public AstroGateway(String url) {
+        this.url = url;
+    }
+
     private final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(2))
             .build();
-    @SuppressWarnings("HttpUrlsUsage")
-    private final HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://api.open-notify.org/astros.json"))
-            .GET() // default (could leave that out)
-            .build();
+
     private final JsonMapper jsonMapper = new JsonMapper();
 
     @Override
     public Result<AstroResponse> getResponse() {
         try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET() // default (could leave that out)
+                    .build();
             HttpResponse<String> httpResponse =
                     client.send(request, HttpResponse.BodyHandlers.ofString());
             return new Success<>(

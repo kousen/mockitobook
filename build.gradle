@@ -18,6 +18,7 @@ repositories {
 String junitVersion = '5.8.2'
 String mockitoVersion = '4.1.0'
 String assertJVersion = '3.21.0'
+String wiremockversion = '2.32.0'
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
@@ -26,6 +27,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
     testImplementation "org.assertj:assertj-core:$assertJVersion"
+    testImplementation "com.github.tomakehurst:wiremock-jre8:$wiremockversion"
 }
 
 tasks.withType(JavaCompile).configureEach {
