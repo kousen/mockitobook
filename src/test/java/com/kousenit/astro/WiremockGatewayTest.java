@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @WireMockTest
 public class WiremockGatewayTest {
@@ -48,7 +48,15 @@ public class WiremockGatewayTest {
                 System.out.println(result);
                 assertAll(
                         () -> assertTrue(data.number() >= 0),
-                        () -> assertEquals(data.people().size(), data.number())
+                        () -> assertEquals(data.people().size(), data.number()),
+                        () -> assertEquals("success", data.message()),
+                        () -> assertAll(
+                                () -> assertThat(data.people())
+                                        .extracting("craft")
+                                        .contains("Discovery One"),
+                                () -> assertThat(data.people())
+                                        .extracting("name")
+                                        .containsExactly("David Bowman", "Frank Poole", "HAL 9000"))
                 );
             }
             case Failure<AstroResponse> astroFailure -> assertNotNull(astroFailure.exception());
