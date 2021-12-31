@@ -23,17 +23,15 @@ public class AstroGateway implements Gateway<AstroResponse> {
         this.url = url;
     }
 
-    private final HttpClient client = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(2))
-            .build();
+    private final HttpClient client = HttpClient.newHttpClient();
 
     private final JsonMapper jsonMapper = new JsonMapper();
 
     @Override
     public Result<AstroResponse> getResponse() {
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
+            HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+                    .header("Accept", "application/json")
                     .GET() // default (could leave that out)
                     .build();
             HttpResponse<String> httpResponse =

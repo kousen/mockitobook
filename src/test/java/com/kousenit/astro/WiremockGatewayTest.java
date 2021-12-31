@@ -60,6 +60,10 @@ public class WiremockGatewayTest {
                 );
             }
             case Failure<AstroResponse> astroFailure -> assertNotNull(astroFailure.exception());
+
         }
+
+        verify(getRequestedFor(urlPathEqualTo("/astros.json"))
+                .withHeader("Accept", equalTo("application/json")));
     }
 }
