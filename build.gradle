@@ -37,4 +37,5 @@ tasks.withType(JavaCompile).configureEach {
 test {
     useJUnitPlatform()
     jvmArgs(['--enable-preview'])
+    maxParallelForks(4)
 }
