@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class PersonService {
     private final PersonRepository repository;
@@ -17,22 +16,21 @@ public class PersonService {
         return repository.findAll()
                 .stream()
                 .map(Person::getLast)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Integer getHighestId() {
         return repository.findAll()
                 .stream()
                 .mapToInt(Person::getId)
-                .max()
-                .orElse(0);
+                .max().orElse(0);
     }
 
     public List<Integer> savePeople(Person... person) {
         return Arrays.stream(person)
                 .map(repository::save)
                 .map(Person::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Person createPerson(int id, String first, String last, LocalDate dob) {
@@ -55,6 +53,6 @@ public class PersonService {
                 .map(repository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
