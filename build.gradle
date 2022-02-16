@@ -16,8 +16,8 @@ repositories {
 }
 
 String junitVersion = '5.8.2'
-String mockitoVersion = '4.2.0'
-String assertJVersion = '3.21.0'
+String mockitoVersion = '4.3.1'
+String assertJVersion = '3.22.0'
 String wiremockversion = '2.32.0'
 
 dependencies {
