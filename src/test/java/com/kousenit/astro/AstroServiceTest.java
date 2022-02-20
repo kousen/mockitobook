@@ -142,8 +142,8 @@ class AstroServiceTest {
     void testAstroData_failedGateway() {
         // given:
         willReturn(new Failure<>(
-                new RuntimeException(new IOException("Network problems")
-        ))).given(gateway).getResponse();
+                new RuntimeException(new IOException("Network problems")))
+        ).given(gateway).getResponse();
 
         // when:
         Exception exception = assertThrows(

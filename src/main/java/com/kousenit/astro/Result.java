@@ -5,4 +5,5 @@ public sealed interface Result<T>
 
 record Success<T>(T data) implements Result<T> { }
 
-record Failure<T>(RuntimeException exception) implements Result<T> { }
+record Failure<T>(RuntimeException exception)
+        implements Result<T> { }
