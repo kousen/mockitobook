@@ -171,8 +171,7 @@ class AstroServiceTest {
         when(gateway.getResponse()).thenThrow(
                 new RuntimeException(new IOException("Network problems")));
 
-        Exception exception = assertThrows(
-                RuntimeException.class,
+        Exception exception = assertThrows(RuntimeException.class,
                 () -> service.getAstroData());
 
         Throwable cause = exception.getCause();
