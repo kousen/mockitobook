@@ -24,8 +24,8 @@ public class AddingMachineJUnit5Test {
     @InjectMocks
     private AddingMachine machine;
 
-    @Spy
-    private List<Integer> spyList;
+//    @Spy
+//    private List<Integer> spyList;
 
     @Test
     public void getTotalUsingLoop() {
