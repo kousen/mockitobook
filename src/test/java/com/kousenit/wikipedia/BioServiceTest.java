@@ -34,7 +34,7 @@ class BioServiceTest {
                 "Grace Hopper", "Barbara Liskov");
         try (MockedStatic<WikiUtil> mocked = mockStatic(WikiUtil.class)) {
             mocked.when(() -> WikiUtil.getWikipediaExtract(anyString()))
-                    .thenReturn("Borg", "Hopper", "Lovelace", "Liskov");
+                    .thenAnswer(invocation -> "Bio for " + invocation.getArgument(0));
             List<String> bios = service.getBios();
             System.out.println(bios);
             mocked.verify(() -> WikiUtil.getWikipediaExtract(anyString()),
