@@ -6,15 +6,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,7 +60,8 @@ public class PersonServiceTest {
     @Test
     public void getLastNames() {
         when(repository.findAll()).thenReturn(people);
-        assertEquals(people.stream().map(Person::last).toList(),
+        assertEquals(people.stream().map(Person::getLast)
+                        .collect(Collectors.toList()),
                 service.getLastNames());
     }
 
@@ -108,8 +108,8 @@ public class PersonServiceTest {
         List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
 
         List<Integer> actuals = people.stream()
-                .map(Person::id)
-                .toList();
+                .map(Person::getId)
+                .collect(Collectors.toList());
         assertEquals(ids, actuals);
     }
 
@@ -125,10 +125,10 @@ public class PersonServiceTest {
     public void createPerson() {
         Person hopper = people.get(0);
         service.createPerson(
-                hopper.id(),
-                hopper.first(),
-                hopper.last(),
-                hopper.dob());
+                hopper.getId(),
+                hopper.getFirst(),
+                hopper.getLast(),
+                hopper.getDob());
 
         verify(repository).save(personArg.capture());
 
@@ -174,7 +174,7 @@ public class PersonServiceTest {
         when(repository.findById(anyInt()))
                 .thenAnswer(invocation -> people.stream()
                         .filter(person ->
-                                invocation.getArgument(0).equals(person.id()))
+                                invocation.getArgument(0).equals(person.getId()))
                         .findFirst());
 
         List<Person> personList = service.findByIds(1, 3, 5);

@@ -7,7 +7,7 @@ version '1.0'
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
@@ -16,27 +16,38 @@ repositories {
 }
 
 String junitVersion = '5.8.2'
-String mockitoVersion = '4.4.0'
+String mockitoVersion = '4.5.1'
 String assertJVersion = '3.22.0'
-String wiremockversion = '2.33.0'
+String wiremockversion = '2.33.2'
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
+    // Jackson JSON library
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+    // JUnit, including vintage engine
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
     testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
+
+    // Mockito
     // testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
-    testImplementation "org.assertj:assertj-core:$assertJVersion"
-    testImplementation "com.github.tomakehurst:wiremock-jre8:$wiremockversion"
-}
 
-tasks.withType(JavaCompile).configureEach {
-    it.options.compilerArgs.add('--enable-preview')
+    // AssertJ
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
+
+    // Wiremock
+    testImplementation "com.github.tomakehurst:wiremock-jre8:$wiremockversion"
+
+    // Retrofit (for astro demo)
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 }
 
 test {
     useJUnitPlatform()
-    jvmArgs(['--enable-preview'])
     maxParallelForks(4)
 }

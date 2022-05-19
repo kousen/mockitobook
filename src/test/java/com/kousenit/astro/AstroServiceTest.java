@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 class AstroServiceTest {
     private final AstroResponse mockAstroResponse =
-            new AstroResponse(7, "Success", List.of(
+            new AstroResponse(7, "Success", Arrays.asList(
                     new Assignment("John Sheridan", "Babylon 5"),
                     new Assignment("Susan Ivanova", "Babylon 5"),
                     new Assignment("Beckett Mariner", "USS Cerritos"),
@@ -35,9 +35,9 @@ class AstroServiceTest {
 
     // Integration test -- no mocks
     @Test
-    void testAstroData_RealGateway() {
+    void testAstroData_RealGatewayRetrofit() {
         // Create an instance of AstroService using the real Gateway
-        service = new AstroService(new AstroGateway());
+        service = new AstroService(new AstroGatewayRetrofit());
 
         // Call the method under test
         Map<String, Long> astroData = service.getAstroData();
@@ -46,7 +46,26 @@ class AstroServiceTest {
         astroData.forEach((craft, number) -> {
             System.out.println(number + " astronauts aboard " + craft);
             assertAll(
-                    () -> assertThat(number).isGreaterThan(0),
+                    () -> assertThat(number).isGreaterThanOrEqualTo(0),
+                    () -> assertThat(craft).isNotBlank()
+            );
+        });
+    }
+
+    // Integration test -- no mocks
+    @Test
+    void testAstroData_RealGatewayHttpClient() {
+        // Create an instance of AstroService using the real Gateway
+        service = new AstroService(new AstroGatewayHttpClient());
+
+        // Call the method under test
+        Map<String, Long> astroData = service.getAstroData();
+
+        // Print the results and check that they are reasonable
+        astroData.forEach((craft, number) -> {
+            System.out.println(number + " astronauts aboard " + craft);
+            assertAll(
+                    () -> assertThat(number).isGreaterThanOrEqualTo(0),
                     () -> assertThat(craft).isNotBlank()
             );
         });
@@ -80,7 +99,7 @@ class AstroServiceTest {
 
         // 2. Set expectations on the mock Gateway
         when(mockGateway.getResponse())
-                .thenReturn(new Success<>(mockAstroResponse));
+                .thenReturn(mockAstroResponse);
 
         // 3. Create an instance of AstroService using the mock Gateway
         AstroService service = new AstroService(mockGateway);
@@ -113,7 +132,7 @@ class AstroServiceTest {
         //
         // Set the expectations on the mock
         when(gateway.getResponse())
-                .thenReturn(new Success<>(mockAstroResponse));
+                .thenReturn(mockAstroResponse);
 
         // Call the method under test
         Map<String, Long> astroData = service.getAstroData();
@@ -143,7 +162,7 @@ class AstroServiceTest {
         //
         // Set the expectations on the mock
         given(gateway.getResponse())
-                .willReturn(new Success<>(mockAstroResponse));
+                .willReturn(mockAstroResponse);
 
         // Call the method under test
         Map<String, Long> astroData = service.getAstroData();
@@ -171,7 +190,8 @@ class AstroServiceTest {
         when(gateway.getResponse()).thenThrow(
                 new RuntimeException(new IOException("Network problems")));
 
-        Exception exception = assertThrows(RuntimeException.class,
+        Exception exception = assertThrows(
+                RuntimeException.class,
                 () -> service.getAstroData());
 
         Throwable cause = exception.getCause();
@@ -188,9 +208,8 @@ class AstroServiceTest {
     @Test
     void testAstroData_failedGatewayBDD() {
         // given:
-        willReturn(new Failure<>(
-                new RuntimeException(new IOException("Network problems")))
-        ).given(gateway).getResponse();
+        willThrow(new RuntimeException(new IOException("Network problems")))
+                .given(gateway).getResponse();
 
         // when:
         Exception exception = assertThrows(
@@ -208,4 +227,5 @@ class AstroServiceTest {
         then(gateway).should().getResponse();
         then(gateway).shouldHaveNoMoreInteractions();
     }
+
 }

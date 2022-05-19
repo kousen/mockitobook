@@ -1,0 +1,18 @@
+{
+  "people": [
+    {
+      "craft": "Discovery One",
+      "name": "David Bowman"
+    },
+    {
+      "craft": "Discovery One",
+      "name": "Frank Poole"
+    },
+    {
+      "craft": "Discovery One",
+      "name": "HAL 9000"
+    }
+  ],
+  "message": "success",
+  "number": 3
+}

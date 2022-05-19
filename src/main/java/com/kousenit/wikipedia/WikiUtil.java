@@ -1,6 +1,5 @@
 package com.kousenit.wikipedia;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,7 +11,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -52,14 +50,7 @@ public class WikiUtil {
     private static String parseResponse(HttpResponse<String> response) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         WikiResponse json = mapper.readValue(response.body(), WikiResponse.class);
-        WikiPage page = json.query().pages().get(0);
-        return page.title() + ": " + page.extract();
+        WikiPage page = json.getQuery().getPages().get(0);
+        return page.getTitle() + ": " + page.getExtract();
     }
 }
-
-record WikiResponse(String batchcomplete, WikiQuery query) { }
-record WikiQuery(List<WikiPage> pages) {}
-record WikiPage(@JsonIgnore int pageid,
-                @JsonIgnore int ns,
-                String title,
-                String extract) {}

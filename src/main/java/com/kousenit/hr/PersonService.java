@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class PersonService {
     private final PersonRepository repository;
 
@@ -16,22 +16,22 @@ public class PersonService {
     public List<String> getLastNames() {
         return repository.findAll()
                 .stream()
-                .map(Person::last)
-                .toList();
+                .map(Person::getLast)
+                .collect(Collectors.toList());
     }
 
     public Integer getHighestId() {
         return repository.findAll()
                 .stream()
-                .mapToInt(Person::id)
+                .mapToInt(Person::getId)
                 .max().orElse(0);
     }
 
     public List<Integer> savePeople(Person... person) {
         return Arrays.stream(person)
                 .map(repository::save)
-                .map(Person::id)
-                .toList();
+                .map(Person::getId)
+                .collect(Collectors.toList());
     }
 
     public Person createPerson(int id, String first, String last, LocalDate dob) {
@@ -58,6 +58,6 @@ public class PersonService {
                 .map(repository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .toList();
+                .collect(Collectors.toList());
     }
 }
