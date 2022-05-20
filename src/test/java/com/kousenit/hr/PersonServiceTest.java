@@ -123,6 +123,9 @@ public class PersonServiceTest {
 
     @Test
     public void createPerson() {
+        when(repository.save(any(Person.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
         Person hopper = people.get(0);
         Person person = service.createPerson(
                 hopper.getId(),
