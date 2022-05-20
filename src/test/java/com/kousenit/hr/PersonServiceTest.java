@@ -124,7 +124,7 @@ public class PersonServiceTest {
     @Test
     public void createPerson() {
         Person hopper = people.get(0);
-        service.createPerson(
+        Person person = service.createPerson(
                 hopper.getId(),
                 hopper.getFirst(),
                 hopper.getLast(),
@@ -133,6 +133,7 @@ public class PersonServiceTest {
         verify(repository).save(personArg.capture());
 
         assertEquals(personArg.getValue(), hopper);
+        assertEquals(hopper, person);
     }
 
     @Test
