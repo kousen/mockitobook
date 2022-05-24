@@ -71,10 +71,16 @@ class HelloMockitoTest {
 
     @Test
     void helloMockitoWithExplicitStubs() {
+        PersonRepository personRepo = new InMemoryPersonRepository();
+
         helloMockito = new HelloMockito(
-                new InMemoryPersonRepository(),
+                personRepo,
                 new EchoTranslationService()
         );
+
+        // Save a person
+        Person person = new Person(1, "Grace", "Hopper", LocalDate.now());
+        personRepo.save(person);
 
         // Greet a user that exists
         String greeting = helloMockito.greet(1, "en", "en");

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface PersonRepository {
     Person save(Person person);
-    Optional<Person> findById(Integer id);
+    Optional<Person> findById(int id);
     List<Person> findAll();
     long count();
     void delete(Person person);

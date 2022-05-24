@@ -1,5 +1,6 @@
 package com.kousenit.hr;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -10,14 +11,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,19 +51,54 @@ public class PersonServiceTest {
     public void findMaxId() {
         when(repository.findAll()).thenReturn(people);
 
-        // assertThat(service.getHighestId(), is(14)); // Hamcrest matcher
-        assertEquals(14, service.getHighestId().intValue());
+        assertThat(service.getHighestId()).isEqualTo(14);
 
         verify(repository).findAll();
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
-    public void getLastNames() {
+    public void findMaxId_BDD() {
+        given(repository.findAll()).willReturn(people);
+
+        assertThat(service.getHighestId()).isEqualTo(14);
+
+        then(repository).should().findAll();
+        then(repository).should(times(1)).findAll();
+    }
+
+    @Test
+    void defaultImplementations() {
+        PersonRepository mockRepo = mock(PersonRepository.class);
+        assertAll(
+                () -> assertNull(mockRepo.save(any(Person.class))),
+                () -> assertTrue(mockRepo.findById(anyInt()).isEmpty()),
+                () -> assertTrue(mockRepo.findAll().isEmpty()),
+                () -> assertEquals(0, mockRepo.count())
+        );
+    }
+
+    @Test
+    void getLastNames_usingMockMethod() {
+        PersonRepository mockRepo = mock(PersonRepository.class);
+        when(mockRepo.findAll()).thenReturn(people);
+
+        PersonService personService = new PersonService(mockRepo);
+
+        List<String> lastNames = personService.getLastNames();
+
+        assertThat(lastNames)
+                .contains("Borg", "Goldberg", "Hopper", "Liskov", "Lovelace");
+        verify(mockRepo).findAll();
+    }
+
+    @Test
+    public void getLastNames_usingAnnotations() {
         when(repository.findAll()).thenReturn(people);
-        assertEquals(people.stream().map(Person::getLast)
-                        .collect(Collectors.toList()),
-                service.getLastNames());
+
+        assertThat(service.getLastNames())
+                .contains("Borg", "Goldberg", "Hopper", "Liskov", "Lovelace");
+
+        verify(repository).findAll();
     }
 
     @Test
@@ -154,11 +190,28 @@ public class PersonServiceTest {
     @Test
     public void deleteAll() {
         when(repository.findAll()).thenReturn(people);
-        doNothing().when(repository).delete(any(Person.class));
+
+        doNothing().when(repository)
+                .delete(any(Person.class));
 
         service.deleteAll();
 
         verify(repository, times(5)).delete(any(Person.class));
+    }
+
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
+    @Test
+    public void deleteAllWithNulls() {
+        when(repository.findAll()).thenReturn(
+                Arrays.asList((Person) null));
+
+        //when(repository.delete(null)).thenThrow(RuntimeException.class);
+        doThrow(RuntimeException.class).when(repository)
+                .delete(null);
+
+        assertThrows(RuntimeException.class, () -> service.deleteAll());
+
+        verify(repository).delete(null);
     }
 
     @Test
@@ -167,10 +220,13 @@ public class PersonServiceTest {
         // when(repository.findById(anyInt())).thenReturn(Optional.empty());
 
         // More specific, custom matcher
-        when(repository.findById(argThat(id -> id > 14))).thenReturn(Optional.empty());
+        when(repository.findById(intThat(id -> id > 14)))
+                .thenReturn(Optional.empty());
 
         List<Person> personList = service.findByIds(999);
         assertTrue(personList.isEmpty());
+
+        verify(repository).findById(anyInt());
     }
 
     @Test
@@ -178,10 +234,67 @@ public class PersonServiceTest {
         when(repository.findById(anyInt()))
                 .thenAnswer(invocation -> people.stream()
                         .filter(person ->
-                                invocation.getArgument(0).equals(person.getId()))
+                                invocation.getArgument(0)
+                                        .equals(person.getId()))
                         .findFirst());
 
         List<Person> personList = service.findByIds(1, 3, 5);
         assertEquals(List.of(people.get(0), people.get(2), people.get(4)), personList);
+    }
+
+    @Test
+    void findByIds_explicitWhens() {
+        when(repository.findById(0))
+                .thenReturn(Optional.of(people.get(0)));
+        when(repository.findById(1))
+                .thenReturn(Optional.of(people.get(1)));
+        when(repository.findById(2))
+                .thenReturn(Optional.of(people.get(2)));
+        when(repository.findById(3))
+                .thenReturn(Optional.of(people.get(3)));
+        when(repository.findById(4))
+                .thenReturn(Optional.of(people.get(4)));
+        when(repository.findById(5))
+                .thenReturn(Optional.empty());
+
+        List<Person> personList = service.findByIds(0, 1, 2, 3, 4, 5);
+        assertThat(personList).containsExactly(
+                people.get(0), people.get(1), people.get(2),
+                people.get(3), people.get(4));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void findByIds_thenReturnWithMultipleArgs() {
+        when(repository.findById(anyInt())).thenReturn(
+                Optional.of(people.get(0)),
+                Optional.of(people.get(1)),
+                Optional.of(people.get(2)),
+                Optional.of(people.get(3)),
+                Optional.of(people.get(4)),
+                Optional.empty());
+
+        List<Person> personList = service.findByIds(0, 1, 2, 3, 4, 5);
+        assertThat(personList).isEqualTo(people);
+    }
+
+    @Test
+    void testInMemoryPersonRepository() {
+        PersonRepository personRepo = new InMemoryPersonRepository();
+        PersonService personService = new PersonService(personRepo);
+
+        personService.savePeople(people.toArray(Person[]::new));
+        assertThat(personRepo.findAll()).isEqualTo(people);
+    }
+
+    @Test
+    void spyOnRepository() {
+        PersonRepository personRepo = spy(new InMemoryPersonRepository());
+        PersonService personService = new PersonService(personRepo);
+
+        personService.savePeople(people.toArray(Person[]::new));
+        assertThat(personRepo.findAll()).isEqualTo(people);
+
+        verify(personRepo, times(people.size())).save(any(Person.class));
     }
 }

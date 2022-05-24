@@ -20,6 +20,14 @@ public class PersonService {
                 .collect(Collectors.toList());
     }
 
+    public List<Person> findByIds(int... ids) {
+        return Arrays.stream(ids)
+                .mapToObj(repository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
     public Integer getHighestId() {
         return repository.findAll()
                 .stream()
@@ -53,11 +61,4 @@ public class PersonService {
                 .forEach(repository::delete);
     }
 
-    public List<Person> findByIds(Integer... ids) {
-        return Arrays.stream(ids)
-                .map(repository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-    }
 }
