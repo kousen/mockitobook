@@ -41,7 +41,7 @@ public class Person {
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (Person) obj;
+        Person that = (Person) obj;
         return Objects.equals(this.id, that.id) &&
                 Objects.equals(this.first, that.first) &&
                 Objects.equals(this.last, that.last) &&
