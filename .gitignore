@@ -11,3 +11,4 @@ out
 *.ipr
 *.iws
 .jqwik-database
+.DS_Store
