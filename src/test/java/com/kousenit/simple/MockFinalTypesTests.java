@@ -28,16 +28,18 @@ public class MockFinalTypesTests {
     @Test
     @Disabled("Mockito cannot mock wrapper types, String.class, or Class.class")
     public void mockFinalClassString() {
-//        String mockString = mock(String.class);
-//
-//        when(mockString).thenReturn("hello");
-//        when(mockString.length()).thenReturn(5);
-//
-//        assertThat(mockString).hasToString("hello");
-//        int length = mockString.length();
-//        assertThat(length).isEqualTo(5);
-//
-//        verify(mockString).length();
+/*
+        String mockString = mock(String.class);
+
+        when(mockString).thenReturn("hello");
+        when(mockString.length()).thenReturn(5);
+
+        assertThat(mockString).hasToString("hello");
+        int length = mockString.length();
+        assertThat(length).isEqualTo(5);
+
+        verify(mockString).length();
+*/
     }
 
     @Test

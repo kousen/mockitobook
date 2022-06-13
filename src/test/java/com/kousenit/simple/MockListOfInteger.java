@@ -33,7 +33,17 @@ public class MockListOfInteger implements List<Integer> {
 
     @Override
     public Iterator<Integer> iterator() {
-        return null;
+        return new Iterator<Integer>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Integer next() {
+                return null;
+            }
+        };
     }
 
     @Override
@@ -48,7 +58,7 @@ public class MockListOfInteger implements List<Integer> {
 
     @Override
     public boolean add(Integer integer) {
-        return false;
+        return true;
     }
 
     @Override
@@ -113,16 +123,106 @@ public class MockListOfInteger implements List<Integer> {
 
     @Override
     public ListIterator<Integer> listIterator() {
-        return null;
+        return new ListIterator<>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Integer next() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+
+            @Override
+            public Integer previous() {
+                return null;
+            }
+
+            @Override
+            public int nextIndex() {
+                return 0;
+            }
+
+            @Override
+            public int previousIndex() {
+                return 0;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+
+            @Override
+            public void set(Integer integer) {
+
+            }
+
+            @Override
+            public void add(Integer integer) {
+
+            }
+        };
     }
 
     @Override
     public ListIterator<Integer> listIterator(int index) {
-        return null;
+        return new ListIterator<>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Integer next() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+
+            @Override
+            public Integer previous() {
+                return null;
+            }
+
+            @Override
+            public int nextIndex() {
+                return 0;
+            }
+
+            @Override
+            public int previousIndex() {
+                return 0;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+
+            @Override
+            public void set(Integer integer) {
+
+            }
+
+            @Override
+            public void add(Integer integer) {
+
+            }
+        };
     }
 
     @Override
     public List<Integer> subList(int fromIndex, int toIndex) {
-        return null;
+        return this;
     }
 }
