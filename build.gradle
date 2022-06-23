@@ -1,9 +1,8 @@
 plugins {
     id 'java'
+    id "com.github.ben-manes.versions" version "0.42.0"
+    id "nl.littlerobots.version-catalog-update" version "0.5.1"
 }
-
-// depedency versions are in versions.gradle
-apply from: 'versions.gradle'
 
 group 'com.kousenit'
 version '1.0'
@@ -20,30 +19,29 @@ repositories {
 }
 
 dependencies {
-    // JUnit, including vintage engine
-    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
+    // Using Gradle version catalogs -- see gradle/libs.versions.toml
 
-    // Mockito
-    // testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.mockito:mockito-inline:$mockitoVersion"  // includes "core"
-    testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
+    // JUnit, including vintage engine
+    testImplementation libs.bundles.junit
+
+    // Mockito inline (includes core) and JUnit Jupiter engine
+    testImplementation libs.bundles.mockito
 
     // AssertJ
-    testImplementation "org.assertj:assertj-core:$assertJVersion"
+    testImplementation libs.assertj
 
     // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation libs.retrofit.core
+    implementation libs.retrofit.gson
 
     // Jackson JSON library
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    implementation libs.jackson
 
     // Gson
-    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation libs.gson
 }
 
 test {
     useJUnitPlatform()
-    maxParallelForks(4)
+    maxParallelForks = Runtime.runtime.availableProcessors() / 2 + 1
 }

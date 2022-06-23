@@ -1,8 +1,0 @@
-ext {
-    junitVersion = '5.8.2'
-    mockitoVersion = '4.6.1'
-    assertJVersion = '3.23.1'
-    gsonVersion = '2.9.0'
-    jacksonVersion = '2.13.3'
-    retrofitVersion = '2.9.0'
-}

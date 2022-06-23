@@ -11,4 +11,3 @@ gradleEnterprise {
 }
 
 rootProject.name = 'mockitobook'
-
