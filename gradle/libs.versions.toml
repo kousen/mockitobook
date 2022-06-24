@@ -18,11 +18,9 @@ retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "ret
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 
 [bundles]
-junit = [
-    "junit-jupiter",
-    "junit-vintage",
-]
-mockito = [
-    "mockito-inline",
-    "mockito-junit",
-]
+junit = ["junit-jupiter", "junit-vintage"]
+mockito = ["mockito-inline", "mockito-junit"]
+
+[plugins]
+versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
+update = { id = "nl.littlerobots.version-catalog-update", version = "0.5.1" }

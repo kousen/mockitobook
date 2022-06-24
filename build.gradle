@@ -1,7 +1,8 @@
+// Using Gradle version catalogs -- see gradle/libs.versions.toml
 plugins {
     id 'java'
-    id "com.github.ben-manes.versions" version "0.42.0"
-    id "nl.littlerobots.version-catalog-update" version "0.5.1"
+    alias(libs.plugins.versions)
+    alias(libs.plugins.update)
 }
 
 group 'com.kousenit'
@@ -19,12 +20,10 @@ repositories {
 }
 
 dependencies {
-    // Using Gradle version catalogs -- see gradle/libs.versions.toml
-
-    // JUnit, including vintage engine
+    // JUnit bundle (includes vintage engine)
     testImplementation libs.bundles.junit
 
-    // Mockito inline (includes core) and JUnit Jupiter engine
+    // Mockito bundle (inline and JUnit Jupiter engine)
     testImplementation libs.bundles.mockito
 
     // AssertJ
@@ -41,7 +40,7 @@ dependencies {
     implementation libs.gson
 }
 
-test {
+tasks.named('test') {
     useJUnitPlatform()
     maxParallelForks = Runtime.runtime.availableProcessors() / 2 + 1
 }
