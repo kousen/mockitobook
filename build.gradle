@@ -2,7 +2,7 @@
 plugins {
     id 'java'
     alias(libs.plugins.versions)
-    alias(libs.plugins.update)
+    alias(libs.plugins.version.catalog.update)
 }
 
 group 'com.kousenit'
