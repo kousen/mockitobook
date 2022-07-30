@@ -2,7 +2,7 @@
 assertj = "3.23.1"
 gson = "2.9.0"
 jackson = "2.13.3"
-junit = "5.9.0-M1"
+junit = "5.9.0"
 mockito = "4.6.1"
 retrofit = "2.9.0"
 
@@ -18,9 +18,15 @@ retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "ret
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 
 [bundles]
-junit = ["junit-jupiter", "junit-vintage"]
-mockito = ["mockito-inline", "mockito-junit"]
+junit = [
+    "junit-jupiter",
+    "junit-vintage",
+]
+mockito = [
+    "mockito-inline",
+    "mockito-junit",
+]
 
 [plugins]
-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version = "0.5.1" }
+version-catalog-update = "nl.littlerobots.version-catalog-update:0.5.3"
+versions = "com.github.ben-manes.versions:0.42.0"

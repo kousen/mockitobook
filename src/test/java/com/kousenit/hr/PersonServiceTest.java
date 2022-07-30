@@ -1,5 +1,6 @@
 package com.kousenit.hr;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -214,11 +215,21 @@ public class PersonServiceTest {
         verify(repository).delete(null);
     }
 
-    @Test
-    public void findByIdThatDoesNotExist() {
-        // General case
-        // when(repository.findById(anyInt())).thenReturn(Optional.empty());
+    @Test @Disabled("Do not use argThat with integers")
+    public void findByIdThatDoesNotExist_argThat() {
+        // More specific, custom matcher
+        when(repository.findById(argThat(id -> id > 14)))
+                .thenReturn(Optional.empty());
 
+        List<Person> personList = service.findByIds(999);
+        assertTrue(personList.isEmpty());
+
+        verify(repository).findById(anyInt());
+    }
+
+
+    @Test
+    public void findByIdThatDoesNotExist_intThat() {
         // More specific, custom matcher
         when(repository.findById(intThat(id -> id > 14)))
                 .thenReturn(Optional.empty());
@@ -258,9 +269,7 @@ public class PersonServiceTest {
                 .thenReturn(Optional.empty());
 
         List<Person> personList = service.findByIds(0, 1, 2, 3, 4, 5);
-        assertThat(personList).containsExactly(
-                people.get(0), people.get(1), people.get(2),
-                people.get(3), people.get(4));
+        assertThat(personList).containsExactlyInAnyOrderElementsOf(people);
     }
 
     @SuppressWarnings("unchecked")
