@@ -229,15 +229,15 @@ public class PersonServiceTest {
 
 
     @Test
-    public void findByIdThatDoesNotExist_intThat() {
+    public void findByIdsThatDoNotExist_intThat() {
         // More specific, custom matcher
         when(repository.findById(intThat(id -> id > 14)))
                 .thenReturn(Optional.empty());
 
-        List<Person> personList = service.findByIds(999);
+        List<Person> personList = service.findByIds(15, 42, 78, 999);
         assertTrue(personList.isEmpty());
 
-        verify(repository).findById(anyInt());
+        verify(repository, times(4)).findById(anyInt());
     }
 
     @Test
@@ -269,7 +269,7 @@ public class PersonServiceTest {
                 .thenReturn(Optional.empty());
 
         List<Person> personList = service.findByIds(0, 1, 2, 3, 4, 5);
-        assertThat(personList).containsExactlyInAnyOrderElementsOf(people);
+        assertThat(personList).containsExactlyElementsOf(people);
     }
 
     @SuppressWarnings("unchecked")
