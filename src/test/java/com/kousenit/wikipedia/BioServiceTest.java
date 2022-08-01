@@ -6,6 +6,7 @@ import org.mockito.MockedStatic;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
@@ -30,13 +31,12 @@ class BioServiceTest {
 
     @Test
     void testBioServiceWithMocks() {
-        BioService service = new BioService("Anita Borg", "Ada Lovelace",
-                "Grace Hopper", "Barbara Liskov");
+        BioService service = new BioService(
+                "Anita Borg", "Ada Lovelace", "Grace Hopper", "Barbara Liskov");
         try (MockedStatic<WikiUtil> mocked = mockStatic(WikiUtil.class)) {
             mocked.when(() -> WikiUtil.getWikipediaExtract(anyString()))
                     .thenAnswer(invocation -> "Bio for " + invocation.getArgument(0));
-            List<String> bios = service.getBios();
-            System.out.println(bios);
+            assertThat(service.getBios()).hasSize(4);
             mocked.verify(() -> WikiUtil.getWikipediaExtract(anyString()),
                     times(4));
         }
