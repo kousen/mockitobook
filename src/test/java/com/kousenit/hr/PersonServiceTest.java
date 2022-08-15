@@ -64,7 +64,7 @@ public class PersonServiceTest {
         assertThat(service.getHighestId()).isEqualTo(14);
 
         then(repository).should().findAll();
-        then(repository).should(times(1)).findAll();
+        // then(repository).should(times(1)).findAll();
     }
 
     @Test
@@ -294,6 +294,20 @@ public class PersonServiceTest {
 
         personService.savePeople(people.toArray(Person[]::new));
         assertThat(personRepo.findAll()).isEqualTo(people);
+    }
+
+    @Test
+    void testMockOfFinalMethod() {
+        PersonRepository personRepo = mock(InMemoryPersonRepository.class);
+        when(personRepo.save(any(Person.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        PersonService personService = new PersonService(personRepo);
+
+        List<Integer> ids = personService.savePeople(people.toArray(Person[]::new));
+        assertThat(ids).containsExactly(1, 2, 3, 14, 5);
+
+        verify(personRepo, times(5)).save(any(Person.class));
     }
 
     @Test
