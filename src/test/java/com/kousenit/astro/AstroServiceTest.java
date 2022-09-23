@@ -35,7 +35,7 @@ class AstroServiceTest {
 
     // Integration test -- no mocks
     @Test
-    void testAstroData_RealGatewayRetrofit() {
+    void testAstroData_usingRealGateway_withRetrofit() {
         // Create an instance of AstroService using the real Gateway
         service = new AstroService(new AstroGatewayRetrofit());
 
@@ -46,7 +46,7 @@ class AstroServiceTest {
         astroData.forEach((craft, number) -> {
             System.out.println(number + " astronauts aboard " + craft);
             assertAll(
-                    () -> assertThat(number).isGreaterThanOrEqualTo(0),
+                    () -> assertThat(number).isPositive(),
                     () -> assertThat(craft).isNotBlank()
             );
         });
@@ -54,7 +54,7 @@ class AstroServiceTest {
 
     // Integration test -- no mocks
     @Test
-    void testAstroData_RealGatewayHttpClient() {
+    void testAstroData_usingRealGateway_withHttpClient() {
         // Create an instance of AstroService using the real Gateway
         service = new AstroService(new AstroGatewayHttpClient());
 
@@ -65,7 +65,7 @@ class AstroServiceTest {
         astroData.forEach((craft, number) -> {
             System.out.println(number + " astronauts aboard " + craft);
             assertAll(
-                    () -> assertThat(number).isGreaterThanOrEqualTo(0),
+                    () -> assertThat(number).isPositive(),
                     () -> assertThat(craft).isNotBlank()
             );
         });
@@ -73,7 +73,7 @@ class AstroServiceTest {
 
     // Own mock class -- MockGateway
     @Test
-    void testAstroData_OwnMockGateway() {
+    void testAstroData_usingOwnMockGateway() {
         // Create the service using the mock Gateway
         service = new AstroService(new MockGateway());
 
@@ -84,7 +84,7 @@ class AstroServiceTest {
         astroData.forEach((craft, number) -> {
             System.out.println(number + " astronauts aboard " + craft);
             assertAll(
-                    () -> assertThat(number).isGreaterThan(0),
+                    () -> assertThat(number).isPositive(),
                     () -> assertThat(craft).isNotBlank()
             );
         });
@@ -93,7 +93,7 @@ class AstroServiceTest {
     // Unit test with mock Gateway using mock(Gateway.class)
     @SuppressWarnings("unchecked")
     @Test
-    void testAstroData_MockGateway() {
+    void testAstroData_usingMockGateway() {
         // 1. Create a mock Gateway
         Gateway<AstroResponse> mockGateway = mock(Gateway.class);
 
@@ -116,7 +116,7 @@ class AstroServiceTest {
         astroData.forEach((craft, number) -> {
             System.out.println(number + " astronauts aboard " + craft);
             assertAll(
-                    () -> assertThat(number).isGreaterThan(0),
+                    () -> assertThat(number).isPositive(),
                     () -> assertThat(craft).isNotBlank()
             );
         });
@@ -126,7 +126,7 @@ class AstroServiceTest {
     }
 
     @Test
-    void testAstroData_InjectedMockGateway() {
+    void testAstroData_usingInjectedMockGateway() {
         // Mock Gateway created and injected into AstroService using
         //    @Mock and @InjectMock annotations
         //
@@ -145,7 +145,7 @@ class AstroServiceTest {
         astroData.forEach((craft, number) -> {
             System.out.println(number + " astronauts aboard " + craft);
             assertAll(
-                    () -> assertThat(number).isGreaterThan(0),
+                    () -> assertThat(number).isPositive(),
                     () -> assertThat(craft).isNotBlank()
             );
         });
@@ -156,7 +156,7 @@ class AstroServiceTest {
 
     // Unit test with injected mock Gateway (uses annotations)
     @Test
-    void testAstroData_InjectedMockGatewayBDD() {
+    void testAstroData_usingInjectedMockGatewayBDD() {
         // Mock Gateway created and injected into AstroService using
         //    @Mock and @InjectMock annotations
         //
@@ -175,7 +175,7 @@ class AstroServiceTest {
         astroData.forEach((craft, number) -> {
             System.out.println(number + " astronauts aboard " + craft);
             assertAll(
-                    () -> assertThat(number).isGreaterThan(0),
+                    () -> assertThat(number).isPositive(),
                     () -> assertThat(craft).isNotBlank()
             );
         });
@@ -186,7 +186,7 @@ class AstroServiceTest {
 
     // Check network failure
     @Test
-    void testAstroData_failedGateway() {
+    void testAstroData_usingFailedGateway() {
         when(gateway.getResponse()).thenThrow(
                 new RuntimeException(new IOException("Network problems")));
 
@@ -206,7 +206,7 @@ class AstroServiceTest {
 
     // Check network failure
     @Test
-    void testAstroData_failedGatewayBDD() {
+    void testAstroData_usingFailedGatewayBDD() {
         // given:
         willThrow(new RuntimeException(new IOException("Network problems")))
                 .given(gateway).getResponse();
