@@ -71,11 +71,11 @@ class AstroServiceTest {
         });
     }
 
-    // Own mock class -- MockGateway
+    // Own mock class -- FakeGateway
     @Test
     void testAstroData_usingOwnMockGateway() {
         // Create the service using the mock Gateway
-        service = new AstroService(new MockGateway());
+        service = new AstroService(new FakeGateway());
 
         // Call the method under test
         Map<String, Long> astroData = service.getAstroData();

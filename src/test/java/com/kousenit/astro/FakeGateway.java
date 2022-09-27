@@ -2,7 +2,7 @@ package com.kousenit.astro;
 
 import java.util.List;
 
-public class MockGateway implements Gateway<AstroResponse> {
+public class FakeGateway implements Gateway<AstroResponse> {
     @Override
     public AstroResponse getResponse() {
         return new AstroResponse(7, "Success",
