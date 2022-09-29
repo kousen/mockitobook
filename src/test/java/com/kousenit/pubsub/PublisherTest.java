@@ -54,6 +54,9 @@ class PublisherTest {
 
     @Test
     void handleMisbehavingSubscribers() {
+        // Does not compile:
+        // when(sub1.receive(anyString())).thenThrow(new RuntimeException("Oops"));
+
         // sub1 throws an exception
         doThrow(RuntimeException.class).when(sub1).receive(anyString());
 
@@ -61,7 +64,7 @@ class PublisherTest {
         pub.send("message 2");
 
         // both subscribers still received the messages
-        verify(sub1, times(2)).receive(anyString());
+        verify(sub1, times(2)).receive(matches("message \\d"));
         verify(sub2, times(2)).receive(anyString());
     }
 }

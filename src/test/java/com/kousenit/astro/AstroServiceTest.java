@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -190,18 +191,10 @@ class AstroServiceTest {
         when(gateway.getResponse()).thenThrow(
                 new RuntimeException(new IOException("Network problems")));
 
-        Exception exception = assertThrows(
-                RuntimeException.class,
-                () -> service.getAstroData());
-
-        Throwable cause = exception.getCause();
-        assertAll(
-                () -> assertEquals(IOException.class, cause.getClass()),
-                () -> assertEquals("Network problems", cause.getMessage())
-        );
-
-        // verify:
-        verify(gateway).getResponse();
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> service.getAstroData())
+                .withCauseInstanceOf(IOException.class)
+                .withMessageContaining("Network problems");
     }
 
     // Check network failure
@@ -222,10 +215,6 @@ class AstroServiceTest {
                 () -> assertEquals(IOException.class, cause.getClass()),
                 () -> assertEquals("Network problems", cause.getMessage())
         );
-
-        // verify:
-        then(gateway).should().getResponse();
-        then(gateway).shouldHaveNoMoreInteractions();
     }
 
 }
