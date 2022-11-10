@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -14,8 +15,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class HelloMockitoTest {
@@ -28,7 +28,8 @@ class HelloMockitoTest {
     @InjectMocks
     private HelloMockito helloMockito;
 
-    @Test @DisplayName("Greet Admiral Hopper")
+    @Test
+    @DisplayName("Greet Admiral Hopper")
     void greetForPersonThatExists() {
         when(repository.findById(anyInt()))
                 .thenReturn(Optional.of(new Person(1, "Grace", "Hopper", LocalDate.now())));
@@ -40,11 +41,14 @@ class HelloMockitoTest {
 
         InOrder inOrder = inOrder(repository, translationService);
 
-        inOrder.verify(repository).findById(anyInt());
-        inOrder.verify(translationService).translate(anyString(), eq("en"), eq("en"));
+        inOrder.verify(repository)
+                .findById(anyInt());
+        inOrder.verify(translationService)
+                .translate(anyString(), eq("en"), eq("en"));
     }
 
-    @Test @DisplayName("Greet a person not in the database")
+    @Test
+    @DisplayName("Greet a person not in the database")
     void greetForPersonThatDoesNotExist() {
         when(repository.findById(anyInt()))
                 .thenReturn(Optional.empty());
@@ -56,8 +60,40 @@ class HelloMockitoTest {
 
         InOrder inOrder = inOrder(repository, translationService);
 
-        inOrder.verify(repository).findById(anyInt());
-        inOrder.verify(translationService).translate(anyString(), eq("en"), eq("en"));
+        inOrder.verify(repository)
+                .findById(anyInt());
+        inOrder.verify(translationService)
+                .translate(anyString(), eq("en"), eq("en"));
+    }
+
+    @Test
+    void greetWithDefaultTranslator() {
+        PersonRepository mockRepo = mock(PersonRepository.class);
+        when(mockRepo.findById(anyInt()))
+                .thenReturn(Optional.of(new Person(1, "Grace", "Hopper", LocalDate.now())));
+        HelloMockito helloMockito = new HelloMockito(mockRepo);
+        String greeting = helloMockito.greet(1, "en", "en");
+        assertThat(greeting).isEqualTo("Hello, Grace, from Mockito!");
+    }
+
+    @Test
+    void greetWithMockedConstructor() {
+        // Mock for repo (needed for HelloMockito constructor)
+        PersonRepository mockRepo = mock(PersonRepository.class);
+        when(mockRepo.findById(anyInt()))
+                .thenReturn(Optional.of(new Person(1, "Grace", "Hopper", LocalDate.now())));
+
+        // Mock for translator (instantiated inside HelloMockito constructor)
+        try (MockedConstruction<DefaultTranslationService> ignored =
+                     mockConstruction(DefaultTranslationService.class,
+                             (mock, context) -> when(mock.translate(anyString(), anyString(), anyString()))
+                                     .thenAnswer(invocation -> invocation.getArgument(0) + " (translated)"))) {
+
+            // Instantiate HelloMockito with mocked repo and locally instantiated translator
+            HelloMockito hello = new HelloMockito(mockRepo);
+            String greeting = hello.greet(1, "en", "en");
+            assertThat(greeting).isEqualTo("Hello, Grace, from Mockito! (translated)");
+        }
     }
 
     @Test
@@ -75,7 +111,7 @@ class HelloMockitoTest {
 
         helloMockito = new HelloMockito(
                 personRepo,
-                new EchoTranslationService()
+                new DefaultTranslationService()
         );
 
         // Save a person
