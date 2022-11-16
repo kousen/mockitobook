@@ -22,6 +22,12 @@ public class HelloMockito {
         return translationService.translate(String.format(greeting, name), sourceLanguage, targetLanguage);
     }
 
+    public String greet(int id) {
+        Optional<Person> person = personRepository.findById(id);
+        String name = person.map(Person::getFirst).orElse("World");
+        return translationService.translate(String.format(greeting, name));
+    }
+
     public void setGreeting(String greeting) {
         this.greeting = greeting;
     }

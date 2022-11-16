@@ -93,6 +93,31 @@ class HelloMockitoTest {
             HelloMockito hello = new HelloMockito(mockRepo);
             String greeting = hello.greet(1, "en", "en");
             assertThat(greeting).isEqualTo("Hello, Grace, from Mockito! (translated)");
+
+            // Any instantiation of DefaultTranslationService will return the mocked instance
+            DefaultTranslationService translator = new DefaultTranslationService();
+            String translate = translator.translate("What up?", "en", "en");
+            assertThat(translate).isEqualTo("What up? (translated)");
+        }
+    }
+
+    @Test
+    void greetWithMockedConstructorWithAnswer() {
+        // Mock for repo (needed for HelloMockito constructor)
+        PersonRepository mockRepo = mock(PersonRepository.class);
+        when(mockRepo.findById(anyInt()))
+                .thenReturn(Optional.of(new Person(1, "Grace", "Hopper", LocalDate.now())));
+
+        // Mock for translator (instantiated inside HelloMockito constructor)
+        try (MockedConstruction<DefaultTranslationService> ignored =
+                     mockConstructionWithAnswer(DefaultTranslationService.class,
+                             invocation -> invocation.getArgument(0) + " (translated)",
+                             invocation -> invocation.getArgument(0) + " (translated again)")) {
+
+            // Instantiate HelloMockito with mocked repo and locally instantiated translator
+            HelloMockito hello = new HelloMockito(mockRepo);
+            String greeting = hello.greet(1, "en", "en");
+            assertThat(greeting).isEqualTo("Hello, Grace, from Mockito! (translated)");
         }
     }
 
