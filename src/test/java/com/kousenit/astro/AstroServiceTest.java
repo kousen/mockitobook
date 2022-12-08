@@ -82,13 +82,13 @@ class AstroServiceTest {
         Map<String, Long> astroData = service.getAstroData();
 
         // Check the results from the method under test
-        astroData.forEach((craft, number) -> {
-            System.out.println(number + " astronauts aboard " + craft);
-            assertAll(
-                    () -> assertThat(number).isPositive(),
-                    () -> assertThat(craft).isNotBlank()
-            );
-        });
+        assertThat(astroData).containsOnlyKeys("USS Voyager", "Jupiter 2",
+                "Babylon 5", "Rocinante", "Nostromo");
+        assertThat(astroData.get("USS Voyager")).isEqualTo(2);
+        assertThat(astroData.get("Jupiter 2")).isEqualTo(1);
+        assertThat(astroData.get("Babylon 5")).isEqualTo(1);
+        assertThat(astroData.get("Rocinante")).isEqualTo(2);
+        assertThat(astroData.get("Nostromo")).isEqualTo(1);
     }
 
     // Unit test with mock Gateway using mock(Gateway.class)
@@ -114,13 +114,6 @@ class AstroServiceTest {
                 .containsEntry("USS Cerritos", 4L)
                 .containsEntry("Nostromo", 1L)
                 .hasSize(3);
-        astroData.forEach((craft, number) -> {
-            System.out.println(number + " astronauts aboard " + craft);
-            assertAll(
-                    () -> assertThat(number).isPositive(),
-                    () -> assertThat(craft).isNotBlank()
-            );
-        });
 
         // 6. Verify that the mock Gateway method was called
         verify(mockGateway).getResponse();
@@ -143,13 +136,6 @@ class AstroServiceTest {
                 .containsEntry("Babylon 5", 2L)
                 .containsEntry("Nostromo", 1L)
                 .containsEntry("USS Cerritos", 4L);
-        astroData.forEach((craft, number) -> {
-            System.out.println(number + " astronauts aboard " + craft);
-            assertAll(
-                    () -> assertThat(number).isPositive(),
-                    () -> assertThat(craft).isNotBlank()
-            );
-        });
 
         // Verify the stubbed method was called
         verify(gateway).getResponse();
@@ -173,13 +159,6 @@ class AstroServiceTest {
                 .containsEntry("Babylon 5", 2L)
                 .containsEntry("Nostromo", 1L)
                 .containsEntry("USS Cerritos", 4L);
-        astroData.forEach((craft, number) -> {
-            System.out.println(number + " astronauts aboard " + craft);
-            assertAll(
-                    () -> assertThat(number).isPositive(),
-                    () -> assertThat(craft).isNotBlank()
-            );
-        });
 
         // Verify the stubbed method was called
         then(gateway).should().getResponse();

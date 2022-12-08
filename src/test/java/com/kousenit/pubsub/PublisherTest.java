@@ -50,6 +50,9 @@ class PublisherTest {
                 argThat(s -> s.matches("Message \\d")));
         verify(sub1, times(2)).receive(
                 argThat(s -> s.matches("Message \\d")));
+
+        // Simpler, without custom matcher
+        verify(sub1, times(2)).receive(matches("Message \\d"));
     }
 
     @Test
