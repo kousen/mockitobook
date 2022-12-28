@@ -33,7 +33,7 @@ public class MockListOfInteger implements List<Integer> {
 
     @Override
     public Iterator<Integer> iterator() {
-        return new Iterator<Integer>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return false;
@@ -53,7 +53,7 @@ public class MockListOfInteger implements List<Integer> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        return null;
+        return a;
     }
 
     @Override
