@@ -13,18 +13,16 @@ class PublisherTest {
 
     @BeforeEach
     void setUp() {
-        when(sub1.getName()).thenReturn("sub1");
-        when(sub2.getName()).thenReturn("sub2");
-        pub.addSubscriber(sub1);
-        pub.addSubscriber(sub2);
+        pub.subscribe(sub1);
+        pub.subscribe(sub2);
     }
 
     @Test
     void publisherSendsMessageToAllSubscribers() {
         pub.send("Hello");
 
-        verify(sub1).receive("Hello");
-        verify(sub2).receive("Hello");
+        verify(sub1).onNext("Hello");
+        verify(sub2).onNext("Hello");
     }
 
     @Test
@@ -32,8 +30,8 @@ class PublisherTest {
         pub.send("Hello");
 
         InOrder inorder = inOrder(sub1, sub2);
-        inorder.verify(sub1).receive("Hello");
-        inorder.verify(sub2).receive("Hello");
+        inorder.verify(sub1).onNext("Hello");
+        inorder.verify(sub2).onNext("Hello");
     }
 
     @Test
@@ -42,17 +40,17 @@ class PublisherTest {
         pub.send("Message 2");
 
         // Check for any string
-        verify(sub1, times(2)).receive(anyString());
-        verify(sub2, times(2)).receive(anyString());
+        verify(sub1, times(2)).onNext(anyString());
+        verify(sub2, times(2)).onNext(anyString());
 
         // Check for specific string pattern
-        verify(sub1, times(2)).receive(
+        verify(sub1, times(2)).onNext(
                 argThat(s -> s.matches("Message \\d")));
-        verify(sub1, times(2)).receive(
+        verify(sub1, times(2)).onNext(
                 argThat(s -> s.matches("Message \\d")));
 
         // Simpler, without custom matcher
-        verify(sub1, times(2)).receive(matches("Message \\d"));
+        verify(sub1, times(2)).onNext(matches("Message \\d"));
     }
 
     @Test
@@ -61,13 +59,13 @@ class PublisherTest {
         // when(sub1.receive(anyString())).thenThrow(new RuntimeException("Oops"));
 
         // sub1 throws an exception
-        doThrow(RuntimeException.class).when(sub1).receive(anyString());
+        doThrow(RuntimeException.class).when(sub1).onNext(anyString());
 
         pub.send("message 1");
         pub.send("message 2");
 
         // both subscribers still received the messages
-        verify(sub1, times(2)).receive(matches("message \\d"));
-        verify(sub2, times(2)).receive(anyString());
+        verify(sub1, times(2)).onNext(matches("message \\d"));
+        verify(sub2, times(2)).onNext(anyString());
     }
 }

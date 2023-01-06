@@ -151,4 +151,19 @@ class HelloMockitoTest {
         greeting = helloMockito.greet(100, "en", "en");
         assertThat(greeting).isEqualTo("Hello, World, from Mockito!");
     }
+
+    @Test
+    void greetPersonWithSpecifiedLanguages() {
+        Person hopper = new Person(1, "Grace", "Hopper",
+                LocalDate.of(1906, 12, 9));
+
+        TranslationService mockTranslator = mock(TranslationService.class);
+        when(mockTranslator.translate(anyString(), anyString(), anyString()))
+                .thenReturn(String.format("Hello, %s, from Mockito", hopper.getFirst())
+                        + " (translated)");
+
+        HelloMockito helloMockito = new HelloMockito(mockTranslator);
+        String greeting = helloMockito.greet(hopper, "en", "en");
+        assertThat(greeting).isEqualTo("Hello, Grace, from Mockito (translated)");
+    }
 }

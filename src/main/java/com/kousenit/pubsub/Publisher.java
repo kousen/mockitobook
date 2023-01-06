@@ -7,7 +7,7 @@ import java.util.List;
 public class Publisher {
     private final List<Subscriber> subscribers = new ArrayList<>();
 
-    public void addSubscriber(Subscriber sub) {
+    public void subscribe(Subscriber sub) {
         subscribers.add(sub);
     }
 
@@ -15,7 +15,7 @@ public class Publisher {
     public void send(String message) {
         for (Subscriber sub : subscribers) {
             try {
-                sub.receive(message);
+                sub.onNext(message);
             } catch (Exception ignored) {
                 // evil, but what can you do?
             }
