@@ -1,6 +1,8 @@
 package com.kousenit.pubsub;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
@@ -34,6 +36,16 @@ class PublisherTest {
         inorder.verify(sub2).onNext("Hello");
     }
 
+    @Test @DisplayName("Test send in parallel")
+    @Disabled("This test fails because the order of the calls is not guaranteed")
+    void testSendParallelCausesProblemsWithOrder() {
+        pub.sendParallel("Hello");
+
+        InOrder inorder = inOrder(sub1, sub2);
+        inorder.verify(sub1).onNext("Hello");
+        inorder.verify(sub2).onNext("Hello");
+    }
+
     @Test
     void publisherSendsMessageWithAPattern() {
         pub.send("Message 1");
@@ -56,7 +68,7 @@ class PublisherTest {
     @Test
     void handleMisbehavingSubscribers() {
         // Does not compile:
-        // when(sub1.receive(anyString())).thenThrow(new RuntimeException("Oops"));
+        // when(sub1.onNext(anyString())).thenThrow(new RuntimeException("Oops"));
 
         // sub1 throws an exception
         doThrow(RuntimeException.class).when(sub1).onNext(anyString());

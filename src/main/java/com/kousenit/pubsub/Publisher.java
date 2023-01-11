@@ -21,5 +21,16 @@ public class Publisher {
             }
         }
     }
+
+    public void sendParallel(String message) {
+        subscribers.parallelStream().forEach(sub -> {
+            try {
+                sub.onNext(message);
+            } catch (Exception ignored) {
+                // evil, but what can you do?
+            }
+        });
+    }
+
 }
 

@@ -1,8 +1,8 @@
 [versions]
-assertj = "3.24.0"
-gson = "2.10"
+assertj = "3.24.1"
+gson = "2.10.1"
 jackson = "2.14.1"
-junit = "5.9.1"
+junit = "5.9.2"
 mockito = "4.11.0"
 retrofit = "2.9.0"
 

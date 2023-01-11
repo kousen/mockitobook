@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -103,16 +104,16 @@ public class AddingMachineTest {
     }
 
     @Test  // Not using Mockito at all
-    public void getTotalWithStubbedList() {
-        List<Integer> stubbedList = List.of(1, 2, 3);
+    public void getTotalWithRealList() {
+        List<Integer> realList = List.of(1, 2, 3);
 
-        AddingMachine machine = new AddingMachine(stubbedList);
+        AddingMachine machine = new AddingMachine(realList);
 
         assertEquals(1 + 2 + 3, machine.getTotalUsingLoop());
         assertEquals(1 + 2 + 3, machine.getTotalUsingIterable());
         assertEquals(1 + 2 + 3, machine.getTotalUsingStream());
 
-        // No built-in way to verify the method calls on stubbed list
+        // No built-in way to verify the method calls on real list
     }
 
     @Test
@@ -131,5 +132,16 @@ public class AddingMachineTest {
         verify(spyList, times(3)).get(anyInt());
         verify(spyList).iterator();
         verify(spyList).stream();
+    }
+
+    @Test
+    public void partialMockOfList() {
+        // Spy on a real list
+        List<Integer> spyList = spy(List.of());
+
+        // Stub the size() method
+        when(spyList.size()).thenReturn(3);
+
+        assertFalse(spyList.isEmpty()); // Uh oh. Is it empty or not?
     }
 }
