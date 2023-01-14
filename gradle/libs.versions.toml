@@ -3,7 +3,7 @@ assertj = "3.24.1"
 gson = "2.10.1"
 jackson = "2.14.1"
 junit = "5.9.2"
-mockito = "4.11.0"
+mockito = "5.0.0"
 retrofit = "2.9.0"
 
 [libraries]
@@ -12,6 +12,7 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jackson = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junit-vintage = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockito" }
 mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -23,7 +24,7 @@ junit = [
     "junit-vintage",
 ]
 mockito = [
-    "mockito-inline",
+    "mockito-core",
     "mockito-junit",
 ]
 
