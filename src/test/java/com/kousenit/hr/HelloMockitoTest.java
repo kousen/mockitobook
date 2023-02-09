@@ -30,16 +30,19 @@ class HelloMockitoTest {
     @Test
     @DisplayName("Greet Admiral Hopper")
     void greetForPersonThatExists() {
+        // Set the expectations on the dependencies
         when(repository.findById(anyInt()))
                 .thenReturn(Optional.of(new Person(1, "Grace", "Hopper", LocalDate.now())));
-        when(translationService.translate("Hello, Grace, from Mockito!", "en", "en"))
+        when(translationService.translate(
+                "Hello, Grace, from Mockito!", "en", "en"))
                 .thenReturn("Hello, Grace, from Mockito!");
 
+        // Test the greet method
         String greeting = helloMockito.greet(1, "en", "en");
         assertEquals("Hello, Grace, from Mockito!", greeting);
 
+        // Verify that the dependencies were called as expected
         InOrder inOrder = inOrder(repository, translationService);
-
         inOrder.verify(repository)
                 .findById(anyInt());
         inOrder.verify(translationService)
@@ -51,14 +54,14 @@ class HelloMockitoTest {
     void greetForPersonThatDoesNotExist() {
         when(repository.findById(anyInt()))
                 .thenReturn(Optional.empty());
-        when(translationService.translate("Hello, World, from Mockito!", "en", "en"))
+        when(translationService.translate(
+                "Hello, World, from Mockito!", "en", "en"))
                 .thenReturn("Hello, World, from Mockito!");
 
         String greeting = helloMockito.greet(100, "en", "en");
         assertEquals("Hello, World, from Mockito!", greeting);
 
         InOrder inOrder = inOrder(repository, translationService);
-
         inOrder.verify(repository)
                 .findById(anyInt());
         inOrder.verify(translationService)
