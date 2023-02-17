@@ -6,8 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -142,6 +141,6 @@ public class AddingMachineTest {
         // Stub the size() method
         when(spyList.size()).thenReturn(3);
 
-        assertFalse(spyList.isEmpty()); // Uh oh. Is it empty or not?
+        assertTrue(spyList.isEmpty()); // Uh oh. Is it empty or not?
     }
 }

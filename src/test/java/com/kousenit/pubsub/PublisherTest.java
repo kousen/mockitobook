@@ -28,6 +28,22 @@ class PublisherTest {
     }
 
     @Test
+    void handleMisbehavingSubscribers() {
+        // Does not compile:
+        // when(sub1.onNext(anyString())).thenThrow(new RuntimeException("Oops"));
+
+        // sub1 throws an exception
+        doThrow(RuntimeException.class).when(sub1).onNext(anyString());
+
+        pub.send("message 1");
+        pub.send("message 2");
+
+        // both subscribers still received the messages
+        verify(sub1, times(2)).onNext(matches("message \\d"));
+        verify(sub2, times(2)).onNext(anyString());
+    }
+
+    @Test
     void testSendInOrder() {
         pub.send("Hello");
 
@@ -65,19 +81,4 @@ class PublisherTest {
         verify(sub1, times(2)).onNext(matches("Message \\d"));
     }
 
-    @Test
-    void handleMisbehavingSubscribers() {
-        // Does not compile:
-        // when(sub1.onNext(anyString())).thenThrow(new RuntimeException("Oops"));
-
-        // sub1 throws an exception
-        doThrow(RuntimeException.class).when(sub1).onNext(anyString());
-
-        pub.send("message 1");
-        pub.send("message 2");
-
-        // both subscribers still received the messages
-        verify(sub1, times(2)).onNext(matches("message \\d"));
-        verify(sub2, times(2)).onNext(anyString());
-    }
 }

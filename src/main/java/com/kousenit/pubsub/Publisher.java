@@ -27,7 +27,6 @@ public class Publisher {
             try {
                 sub.onNext(message);
             } catch (Exception ignored) {
-                // evil, but what can you do?
             }
         });
     }
