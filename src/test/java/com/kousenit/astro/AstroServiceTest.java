@@ -34,6 +34,88 @@ class AstroServiceTest {
     @InjectMocks
     private AstroService service;
 
+    @Test
+    void testAstroData_usingInjectedMockGateway() {
+        // Mock Gateway created and injected into AstroService using
+        //    @Mock and @InjectMock annotations
+        //
+        // Set the expectations on the mock
+        when(gateway.getResponse())
+                .thenReturn(mockAstroResponse);
+
+        // Call the method under test
+        Map<String, Long> astroData = service.getAstroData();
+
+        // Check the results from the method under test (AssertJ)
+        assertThat(astroData)
+                .containsEntry("Babylon 5", 2L)
+                .containsEntry("Nostromo", 1L)
+                .containsEntry("USS Cerritos", 4L);
+
+        // Verify the stubbed method was called
+        verify(gateway).getResponse();
+        // verify(gateway, times(1)).getResponse();
+    }
+
+    // Unit test with injected mock Gateway (uses annotations)
+    @Test
+    void testAstroData_usingInjectedMockGatewayBDD() {
+        // Mock Gateway created and injected into AstroService using
+        //    @Mock and @InjectMock annotations
+        //
+        // Set the expectations on the mock
+        given(gateway.getResponse())
+                .willReturn(mockAstroResponse);
+
+        // Call the method under test
+        Map<String, Long> astroData = service.getAstroData();
+
+        // Check the results from the method under test (AssertJ)
+        assertThat(astroData)
+                .containsEntry("Babylon 5", 2L)
+                .containsEntry("Nostromo", 1L)
+                .containsEntry("USS Cerritos", 4L);
+
+        // Verify the stubbed method was called
+        then(gateway).should().getResponse();
+    }
+
+    // Check network failure
+    @Test
+    void testAstroData_usingFailedGateway() {
+        when(gateway.getResponse()).thenThrow(
+                new RuntimeException(new IOException("Network problems")));
+
+        // Check the exception thrown by the method under test (AssertJ)
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> service.getAstroData())
+                .withCauseInstanceOf(IOException.class)
+                .withMessageContaining("Network problems");
+
+        verify(gateway).getResponse();
+    }
+
+    // Check network failure
+    @Test
+    void testAstroData_usingFailedGatewayBDD() {
+        // given:
+        given(gateway.getResponse()).willThrow(
+                new RuntimeException(new IOException("Network problems")));
+
+        // when:
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> service.getAstroData());
+
+        // then:
+        Throwable cause = exception.getCause();
+        assertAll(
+                () -> assertEquals(IOException.class, cause.getClass()),
+                () -> assertEquals("Network problems", cause.getMessage())
+        );
+
+        then(gateway).should().getResponse();
+    }
+
     // Integration test -- no mocks
     @Test
     void testAstroData_usingRealGateway_withRetrofit() {
@@ -117,83 +199,6 @@ class AstroServiceTest {
 
         // 6. Verify that the mock Gateway method was called
         verify(mockGateway).getResponse();
-    }
-
-    @Test
-    void testAstroData_usingInjectedMockGateway() {
-        // Mock Gateway created and injected into AstroService using
-        //    @Mock and @InjectMock annotations
-        //
-        // Set the expectations on the mock
-        when(gateway.getResponse())
-                .thenReturn(mockAstroResponse);
-
-        // Call the method under test
-        Map<String, Long> astroData = service.getAstroData();
-
-        // Check the results from the method under test
-        assertThat(astroData)
-                .containsEntry("Babylon 5", 2L)
-                .containsEntry("Nostromo", 1L)
-                .containsEntry("USS Cerritos", 4L);
-
-        // Verify the stubbed method was called
-        verify(gateway).getResponse();
-    }
-
-    // Unit test with injected mock Gateway (uses annotations)
-    @Test
-    void testAstroData_usingInjectedMockGatewayBDD() {
-        // Mock Gateway created and injected into AstroService using
-        //    @Mock and @InjectMock annotations
-        //
-        // Set the expectations on the mock
-        given(gateway.getResponse())
-                .willReturn(mockAstroResponse);
-
-        // Call the method under test
-        Map<String, Long> astroData = service.getAstroData();
-
-        // Check the results from the method under test
-        assertThat(astroData)
-                .containsEntry("Babylon 5", 2L)
-                .containsEntry("Nostromo", 1L)
-                .containsEntry("USS Cerritos", 4L);
-
-        // Verify the stubbed method was called
-        then(gateway).should().getResponse();
-    }
-
-    // Check network failure
-    @Test
-    void testAstroData_usingFailedGateway() {
-        when(gateway.getResponse()).thenThrow(
-                new RuntimeException(new IOException("Network problems")));
-
-        assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> service.getAstroData())
-                .withCauseInstanceOf(IOException.class)
-                .withMessageContaining("Network problems");
-    }
-
-    // Check network failure
-    @Test
-    void testAstroData_usingFailedGatewayBDD() {
-        // given:
-        willThrow(new RuntimeException(new IOException("Network problems")))
-                .given(gateway).getResponse();
-
-        // when:
-        Exception exception = assertThrows(
-                RuntimeException.class,
-                () -> service.getAstroData());
-
-        // then:
-        Throwable cause = exception.getCause();
-        assertAll(
-                () -> assertEquals(IOException.class, cause.getClass()),
-                () -> assertEquals("Network problems", cause.getMessage())
-        );
     }
 
 }
