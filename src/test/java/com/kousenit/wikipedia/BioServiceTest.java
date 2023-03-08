@@ -37,8 +37,7 @@ class BioServiceTest {
             mocked.when(() -> WikiUtil.getWikipediaExtract(anyString()))
                     .thenAnswer(invocation -> "Bio for " + invocation.getArgument(0));
             assertThat(service.getBios()).hasSize(4);
-            mocked.verify(() -> WikiUtil.getWikipediaExtract(anyString()),
-                    times(4));
+            mocked.verify(() -> WikiUtil.getWikipediaExtract(anyString()), times(4));
         }
     }
 }

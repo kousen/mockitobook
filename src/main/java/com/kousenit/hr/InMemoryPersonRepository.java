@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class InMemoryPersonRepository implements PersonRepository {
+public final class InMemoryPersonRepository implements PersonRepository {
     private final List<Person> people =
             Collections.synchronizedList(new ArrayList<>());
 

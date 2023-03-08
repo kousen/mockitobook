@@ -9,12 +9,7 @@ public class Person {
     private final String last;
     private final LocalDate dob;
 
-    Person(
-            Integer id,
-            String first,
-            String last,
-            LocalDate dob
-    ) {
+    Person(Integer id, String first, String last, LocalDate dob) {
         this.id = id;
         this.first = first;
         this.last = last;
@@ -43,9 +38,9 @@ public class Person {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         Person that = (Person) obj;
         return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.first, that.first) &&
-                Objects.equals(this.last, that.last) &&
-                Objects.equals(this.dob, that.dob);
+               Objects.equals(this.first, that.first) &&
+               Objects.equals(this.last, that.last) &&
+               Objects.equals(this.dob, that.dob);
     }
 
     @Override
@@ -56,9 +51,9 @@ public class Person {
     @Override
     public String toString() {
         return "Person[" +
-                "id=" + id + ", " +
-                "first=" + first + ", " +
-                "last=" + last + ", " +
-                "dob=" + dob + ']';
+               "id=" + id + ", " +
+               "first=" + first + ", " +
+               "last=" + last + ", " +
+               "dob=" + dob + ']';
     }
 }

@@ -14,8 +14,7 @@ public class PersonService {
     }
 
     public List<String> getLastNames() {
-        return repository.findAll()
-                .stream()
+        return repository.findAll().stream()
                 .map(Person::getLast)
                 .collect(Collectors.toList());
     }
@@ -29,8 +28,7 @@ public class PersonService {
     }
 
     public Integer getHighestId() {
-        return repository.findAll()
-                .stream()
+        return repository.findAll().stream()
                 .mapToInt(Person::getId)
                 .max().orElse(0);
     }
