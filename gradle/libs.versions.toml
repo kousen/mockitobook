@@ -3,7 +3,7 @@ assertj = "3.24.2"
 gson = "2.10.1"
 jackson = "2.14.2"
 junit = "5.9.2"
-mockito = "5.1.1"
+mockito = "5.2.0"
 retrofit = "2.9.0"
 
 [libraries]
