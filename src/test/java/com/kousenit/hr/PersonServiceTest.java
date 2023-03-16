@@ -11,9 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,12 +32,15 @@ public class PersonServiceTest {
     @Captor
     private ArgumentCaptor<Person> personArg;
 
-    private final List<Person> people = Arrays.asList(
+    private final List<Person> people = List.of(
             new Person(1, "Grace", "Hopper", LocalDate.of(1906, Month.DECEMBER, 9)),
             new Person(2, "Ada", "Lovelace", LocalDate.of(1815, Month.DECEMBER, 10)),
             new Person(3, "Adele", "Goldberg", LocalDate.of(1945, Month.JULY, 7)),
             new Person(14, "Anita", "Borg", LocalDate.of(1949, Month.JANUARY, 17)),
             new Person(5, "Barbara", "Liskov", LocalDate.of(1939, Month.NOVEMBER, 7)));
+
+    private final Map<Integer,Person> peopleMap = people.stream()
+            .collect(Collectors.toMap(Person::getId, p -> p));
 
     // Can't be done because JUnit 5 extension is _strict_ and
     // many of these tests don't call repository.findAll()
@@ -119,8 +120,9 @@ public class PersonServiceTest {
                         people.get(4));
 
         // test the service (which uses the mock)
-        assertEquals(List.of(1, 2, 3, 14, 5),
-                service.savePeople(people.toArray(Person[]::new)));
+        List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
+        List<Integer> actuals = new ArrayList<>(peopleMap.keySet());
+        assertThat(ids).containsExactlyInAnyOrderElementsOf(actuals);
 
         // verify the interaction between the service and the mock
         verify(repository, times(people.size())).save(any(Person.class));
@@ -128,7 +130,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void useAnswer() {
+    public void saveAllPeople_usingAnswer() {
         // Anonymous inner class
 //        when(repository.save(any(Person.class)))
 //                .thenAnswer(new Answer<Person>() {
@@ -144,10 +146,8 @@ public class PersonServiceTest {
 
         List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
 
-        List<Integer> actuals = people.stream()
-                .map(Person::getId)
-                .collect(Collectors.toList());
-        assertEquals(ids, actuals);
+        List<Integer> actuals = new ArrayList<>(peopleMap.keySet());
+        assertThat(ids).containsExactlyInAnyOrderElementsOf(actuals);
     }
 
     @Test
@@ -242,13 +242,18 @@ public class PersonServiceTest {
 
     @Test
     public void findByIdsThatDoExist() {
-        when(repository.findById(anyInt()))
-                .thenAnswer(invocation -> people.stream()
-                        .filter(person -> invocation.getArgument(0).equals(person.getId()))
-                        .findFirst());
+        int maxId = peopleMap.keySet().stream()
+                .max(Integer::compareTo).orElse(0);
+        when(repository.findById(intThat(id -> id <= maxId)))
+                .thenAnswer(invocation -> {
+                    int id = invocation.getArgument(0);
+                    return Optional.ofNullable(peopleMap.get(id));
+                });
 
-        List<Person> personList = service.findByIds(1, 3, 5);
-        assertEquals(List.of(people.get(0), people.get(2), people.get(4)), personList);
+        List<Person> personList = service.findByIds(1, 3, 5, maxId);
+        assertThat(personList).containsExactlyElementsOf(
+                List.of(peopleMap.get(1), peopleMap.get(3),
+                        peopleMap.get(5), peopleMap.get(maxId)));
     }
 
     @Test

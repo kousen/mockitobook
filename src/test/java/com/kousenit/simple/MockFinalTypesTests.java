@@ -26,6 +26,21 @@ public class MockFinalTypesTests {
     }
 
     @Test
+    public void mockAnEnum() {
+        Month mockMonth = mock(Month.class);
+
+        when(mockMonth.getValue()).thenReturn(7);
+        when(mockMonth.name()).thenReturn("July");
+
+        assertThat(mockMonth.name()).isEqualTo("July");
+        int value = mockMonth.getValue();
+        assertThat(value).isEqualTo(7);
+
+        verify(mockMonth).getValue();
+        verify(mockMonth).name();
+    }
+
+    @Test
     @Disabled("Mockito cannot mock wrapper types, String.class, or Class.class")
     public void mockFinalClassString() {
 /*
@@ -40,20 +55,5 @@ public class MockFinalTypesTests {
 
         verify(mockString).length();
 */
-    }
-
-    @Test
-    public void mockAnEnum() {
-        Month mockMonth = mock(Month.class);
-
-        when(mockMonth.getValue()).thenReturn(7);
-        when(mockMonth.name()).thenReturn("July");
-
-        assertThat(mockMonth.name()).isEqualTo("July");
-        int value = mockMonth.getValue();
-        assertThat(value).isEqualTo(7);
-
-        verify(mockMonth).getValue();
-        verify(mockMonth).name();
     }
 }

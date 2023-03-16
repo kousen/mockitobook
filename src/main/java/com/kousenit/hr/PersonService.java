@@ -29,8 +29,8 @@ public class PersonService {
 
     public Integer getHighestId() {
         return repository.findAll().stream()
-                .mapToInt(Person::getId)
-                .max().orElse(0);
+                .map(Person::getId)
+                .max(Integer::compareTo).orElse(0);
     }
 
     public List<Integer> savePeople(Person... person) {
