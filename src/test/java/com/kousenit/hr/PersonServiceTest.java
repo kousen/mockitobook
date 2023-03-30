@@ -302,14 +302,19 @@ public class PersonServiceTest {
     @Test
     void testMockOfFinalMethod() {
         PersonRepository personRepo = mock(InMemoryPersonRepository.class);
+
+        // Set expectations on the mock
         when(personRepo.save(any(Person.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
+        // Inject the mock into the class under test
         PersonService personService = new PersonService(personRepo);
 
+        // Test the savePeople method
         List<Integer> ids = personService.savePeople(people.toArray(Person[]::new));
         assertThat(ids).containsExactly(1, 2, 3, 14, 5);
 
+        // Verify the save method in the mock was called as expected
         verify(personRepo, times(5)).save(any(Person.class));
     }
 
