@@ -40,7 +40,7 @@ dependencies {
     implementation libs.gson
 }
 
-tasks.named('test') {
+tasks.named('test',Test) {
     useJUnitPlatform()
-    maxParallelForks = Runtime.runtime.availableProcessors() / 2 + 1
+    maxParallelForks = (int) (Runtime.runtime.availableProcessors() / 2 + 1)
 }
