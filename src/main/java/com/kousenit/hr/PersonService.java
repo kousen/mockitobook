@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class PersonService {
@@ -11,6 +12,17 @@ public class PersonService {
 
     public PersonService(PersonRepository repository) {
         this.repository = repository;
+    }
+
+    public void asyncSavePerson(Person person, long delay) {
+        CompletableFuture.runAsync(() -> {
+            System.out.println("Running on thread " + Thread.currentThread().getName());
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException ignored) {
+            }
+            repository.save(person);
+        });
     }
 
     public List<String> getLastNames() {

@@ -328,4 +328,17 @@ public class PersonServiceTest {
 
         verify(personRepo, times(people.size())).save(any(Person.class));
     }
+
+    @Test
+    void asyncSavePerson() {
+        Person firstPerson = people.get(0);
+        long delay = 100;
+
+        // Call the method under test
+        service.asyncSavePerson(firstPerson, delay);
+
+        // Verify that the save method was called on the repo with the person
+        verify(repository, timeout(2 * delay)).save(firstPerson);
+    }
+
 }
