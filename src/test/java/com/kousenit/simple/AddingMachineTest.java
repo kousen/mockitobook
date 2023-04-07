@@ -17,8 +17,9 @@ public class AddingMachineTest {
     @Test
     public void getTotalUsingLoop() {
         // Create a stubbed list
-        //noinspection unchecked
-        List<Integer> mockList = mock(List.class);
+        // Use no-arg version of mock() to avoid
+        // compiler warning about unchecked cast
+        List<Integer> mockList = mock();
 
         // Set the expectations on the stub
         when(mockList.size()).thenReturn(3);
@@ -40,8 +41,7 @@ public class AddingMachineTest {
     @Test
     public void getTotalUsingLoop_BDD() {
         // Create a stubbed list
-        //noinspection unchecked
-        List<Integer> mockList = mock(List.class);
+        List<Integer> mockList = mock();
 
         // Set the expectations on the stub
         given(mockList.size()).willReturn(3);
@@ -63,8 +63,7 @@ public class AddingMachineTest {
 
     @Test // @SuppressWarnings("unchecked")
     public void getTotalUsingIterable() {
-        //noinspection unchecked
-        List<Integer> mockList = mock(List.class);
+        List<Integer> mockList = mock();
 
         when(mockList.iterator()).thenReturn(
                 Arrays.asList(1, 2, 3).iterator());
@@ -77,8 +76,7 @@ public class AddingMachineTest {
 
     @Test
     public void getTotalUsingStream() {
-        //noinspection unchecked
-        List<Integer> mockList = mock(List.class);
+        List<Integer> mockList = mock();
         when(mockList.stream()).thenReturn(Stream.of(1, 2, 3));
         // when(mockList.size()).thenReturn(3); // In JUnit 5, which is strict, this is not allowed
 
