@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -143,6 +144,16 @@ public class PersonServiceTest {
         // Lambda expression implementation of Answer<Person>
         when(repository.save(any(Person.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+
+        List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
+
+        List<Integer> actuals = new ArrayList<>(peopleMap.keySet());
+        assertThat(ids).containsExactlyInAnyOrderElementsOf(actuals);
+    }
+
+    @Test
+    public void saveAllPeople_usingAdditionalAnswers() {
+        when(repository.save(any(Person.class))).thenAnswer(returnsFirstArg());
 
         List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
 
