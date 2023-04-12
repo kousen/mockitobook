@@ -14,6 +14,13 @@ public class PersonService {
         this.repository = repository;
     }
 
+    public List<Integer> savePeople(Person... person) {
+        return Arrays.stream(person)
+                .map(repository::save)
+                .map(Person::getId)
+                .collect(Collectors.toList());
+    }
+
     public void asyncSavePerson(Person person, long delay) {
         CompletableFuture.runAsync(() -> {
             System.out.println("Running on thread " + Thread.currentThread().getName());
@@ -43,13 +50,6 @@ public class PersonService {
         return repository.findAll().stream()
                 .map(Person::getId)
                 .max(Integer::compareTo).orElse(0);
-    }
-
-    public List<Integer> savePeople(Person... person) {
-        return Arrays.stream(person)
-                .map(repository::save)
-                .map(Person::getId)
-                .collect(Collectors.toList());
     }
 
     public Person createPerson(int id, String first, String last, LocalDate dob) {

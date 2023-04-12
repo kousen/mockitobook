@@ -7,11 +7,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +45,7 @@ public class PersonServiceTest {
             new Person(14, "Anita", "Borg", LocalDate.of(1949, Month.JANUARY, 17)),
             new Person(5, "Barbara", "Liskov", LocalDate.of(1939, Month.NOVEMBER, 7)));
 
-    private final Map<Integer,Person> peopleMap = people.stream()
+    private final Map<Integer, Person> peopleMap = people.stream()
             .collect(Collectors.toMap(Person::getId, p -> p));
 
     // Can't be done because JUnit 5 extension is _strict_ and
@@ -65,7 +70,8 @@ public class PersonServiceTest {
 
         assertThat(service.getHighestId()).isEqualTo(14);
 
-        then(repository).should().findAll();
+        then(repository).should()
+                .findAll();
         // then(repository).should(times(1)).findAll();
     }
 
@@ -74,8 +80,10 @@ public class PersonServiceTest {
         PersonRepository mockRepo = mock(PersonRepository.class);
         assertAll(
                 () -> assertNull(mockRepo.save(any(Person.class))),
-                () -> assertTrue(mockRepo.findById(anyInt()).isEmpty()),
-                () -> assertTrue(mockRepo.findAll().isEmpty()),
+                () -> assertTrue(mockRepo.findById(anyInt())
+                        .isEmpty()),
+                () -> assertTrue(mockRepo.findAll()
+                        .isEmpty()),
                 () -> assertEquals(0, mockRepo.count())
         );
     }
@@ -113,6 +121,7 @@ public class PersonServiceTest {
 
     @Test
     public void saveAllPeople() {
+        // set expectations on the mock repository
         when(repository.save(any(Person.class)))
                 .thenReturn(people.get(0),
                         people.get(1),
@@ -120,45 +129,71 @@ public class PersonServiceTest {
                         people.get(3),
                         people.get(4));
 
-        // test the service (which uses the mock)
+        // test the savePeople method
         List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
-        List<Integer> actuals = new ArrayList<>(peopleMap.keySet());
-        assertThat(ids).containsExactlyInAnyOrderElementsOf(actuals);
+
+        // check the results
+        List<Integer> actuals = people.stream()
+                .map(Person::getId)
+                .collect(Collectors.toList());
+        assertThat(ids).containsExactlyElementsOf(actuals);
 
         // verify the interaction between the service and the mock
         verify(repository, times(people.size())).save(any(Person.class));
         verify(repository, never()).delete(any(Person.class));
     }
 
+    @SuppressWarnings("Convert2Lambda")
     @Test
-    public void saveAllPeople_usingAnswer() {
+    public void saveAllPeople_usingAnswer_anonInnerClass() {
         // Anonymous inner class
-//        when(repository.save(any(Person.class)))
-//                .thenAnswer(new Answer<Person>() {
-//                    @Override
-//                    public Person answer(InvocationOnMock invocation) throws Throwable {
-//                        return invocation.getArgument(0);
-//                    }
-//                });
+        when(repository.save(any(Person.class)))
+                .thenAnswer(new Answer<Person>() {
+                    @Override
+                    public Person answer(InvocationOnMock invocation) {
+                        return invocation.getArgument(0);
+                    }
+                });
 
+        // test the savePeople method
+        List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
+
+        // check the results
+        List<Integer> actuals = people.stream()
+                .map(Person::getId)
+                .collect(Collectors.toList());
+        assertThat(ids).containsExactlyElementsOf(actuals);
+    }
+
+    @Test
+    public void saveAllPeople_usingAnswer_lambdaExpression() {
         // Lambda expression implementation of Answer<Person>
         when(repository.save(any(Person.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
+        // test the savePeople method
         List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
 
-        List<Integer> actuals = new ArrayList<>(peopleMap.keySet());
-        assertThat(ids).containsExactlyInAnyOrderElementsOf(actuals);
+        // check the results
+        List<Integer> actuals = people.stream()
+                .map(Person::getId)
+                .collect(Collectors.toList());
+        assertThat(ids).containsExactlyElementsOf(actuals);
     }
 
     @Test
     public void saveAllPeople_usingAdditionalAnswers() {
+        // set the expectations on the mock
         when(repository.save(any(Person.class))).thenAnswer(returnsFirstArg());
 
+        // invoke the test method
         List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
 
-        List<Integer> actuals = new ArrayList<>(peopleMap.keySet());
-        assertThat(ids).containsExactlyInAnyOrderElementsOf(actuals);
+        // check the results
+        List<Integer> actuals = people.stream()
+                .map(Person::getId)
+                .collect(Collectors.toList());
+        assertThat(ids).containsExactlyElementsOf(actuals);
     }
 
     @Test
@@ -226,7 +261,8 @@ public class PersonServiceTest {
         verify(repository).delete(null);
     }
 
-    @Test @Disabled("Do not use argThat with integers")
+    @Test
+    @Disabled("Do not use argThat with integers")
     public void findByIdThatDoesNotExist_argThat() {
         // More specific, custom matcher
         when(repository.findById(argThat(id -> id > 14)))
@@ -253,8 +289,10 @@ public class PersonServiceTest {
 
     @Test
     public void findByIdsThatDoExist() {
-        int maxId = peopleMap.keySet().stream()
-                .max(Integer::compareTo).orElse(0);
+        int maxId = peopleMap.keySet()
+                .stream()
+                .max(Integer::compareTo)
+                .orElse(0);
         when(repository.findById(intThat(id -> id <= maxId)))
                 .thenAnswer(invocation -> {
                     int id = invocation.getArgument(0);
