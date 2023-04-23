@@ -15,6 +15,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 @ExtendWith(MockitoExtension.class)
 class HelloMockitoTest {
@@ -153,6 +154,27 @@ class HelloMockitoTest {
         // Greet a user that does not exist
         greeting = helloMockito.greet(100, "en", "en");
         assertThat(greeting).isEqualTo("Hello, World, from Mockito!");
+    }
+
+    @Test
+    @DisplayName("Greet Admiral Hopper")
+    void greetAPersonUsingAnswers() {
+        // Set the expectations on the dependencies
+        when(repository.findById(anyInt()))
+                .thenReturn(Optional.of(new Person(1, "Grace", "Hopper", LocalDate.now())));
+        when(translationService.translate(
+                anyString(), eq("en"), eq("en")))
+                .thenAnswer(returnsFirstArg());
+
+        // Test the greet method
+        String greeting = helloMockito.greet(1, "en", "en");
+        assertEquals("Hello, Grace, from Mockito!", greeting);
+
+        // Verify that the dependencies were called as expected
+        verify(repository)
+                .findById(anyInt());
+        verify(translationService)
+                .translate(anyString(), eq("en"), eq("en"));
     }
 
     @Test
