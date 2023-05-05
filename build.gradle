@@ -29,6 +29,9 @@ dependencies {
     // AssertJ
     testImplementation libs.assertj
 
+    // Spring test library (don't move to 3.* unless Java 17+)
+    testImplementation 'org.springframework.boot:spring-boot-test:2.7.11'
+
     // Retrofit
     implementation libs.retrofit.core
     implementation libs.retrofit.gson
