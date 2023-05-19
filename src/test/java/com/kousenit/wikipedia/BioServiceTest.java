@@ -21,9 +21,10 @@ class BioServiceTest {
         List<String> bios = service.getBios();
         assertEquals(4, bios.size());
         bios.forEach(bio -> {
-            String[] strings = bio.split(":");
+//            System.out.println(bio);
+            String[] strings = bio.split("=");
             String[] bioStrings = strings[1].split("\\n");
-            System.out.println("Title: " + strings[0]);
+            System.out.println("Title: " + strings[0].substring(1));
             Arrays.stream(bioStrings)
                     .forEach(System.out::println);
             System.out.println("-------------------");
