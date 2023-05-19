@@ -1,6 +1,7 @@
 package com.kousenit.wikipedia;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.MockedStatic;
 
 import java.util.Arrays;
@@ -35,7 +36,7 @@ class BioServiceTest {
                 "Anita Borg", "Ada Lovelace", "Grace Hopper", "Barbara Liskov");
         try (MockedStatic<WikiUtil> mocked = mockStatic(WikiUtil.class)) {
             mocked.when(() -> WikiUtil.getWikipediaExtract(anyString()))
-                    .thenAnswer(invocation -> "Bio for " + invocation.getArgument(0));
+                    .thenAnswer(AdditionalAnswers.returnsFirstArg());
             assertThat(service.getBios()).hasSize(4);
             mocked.verify(() -> WikiUtil.getWikipediaExtract(anyString()), times(4));
         }

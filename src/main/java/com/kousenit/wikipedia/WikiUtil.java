@@ -28,29 +28,28 @@ public class WikiUtil {
                 Map.entry("formatversion", "2")
         );
         String queryString = params.entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + entry.getValue())
+                .map(Map.Entry::toString)
                 .collect(Collectors.joining("&"));
-        return getResponse(base + "?" + queryString);
+        try {
+            return getResponse(String.format("%s?%s", base, queryString));
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static String getResponse(String url) {
+    private static String getResponse(String url) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .timeout(Duration.ofSeconds(2))
                 .build();
-        try {
-            return parseResponse(client.send(request, HttpResponse.BodyHandlers.ofString()));
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return parseResponse(client.send(request, HttpResponse.BodyHandlers.ofString()));
     }
 
     private static String parseResponse(HttpResponse<String> response) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         WikiResponse json = mapper.readValue(response.body(), WikiResponse.class);
         WikiPage page = json.getQuery().getPages().get(0);
-        return page.getTitle() + ": " + page.getExtract();
+        return Map.of(page.getTitle(), page.getExtract()).toString();
     }
 }
