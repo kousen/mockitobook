@@ -1,9 +1,9 @@
 [versions]
 assertj = "3.24.2"
 gson = "2.10.1"
-jackson = "2.15.0"
-junit = "5.9.3"
-junit-platform = "1.9.3"
+jackson = "2.15.2"
+junit = "5.10.0-M1"
+junit-platform = "1.10.0-M1"
 mockito = "5.3.1"
 retrofit = "2.9.0"
 
@@ -12,8 +12,8 @@ assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jackson = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-junit-vintage = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit" }
 junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+junit-vintage = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }

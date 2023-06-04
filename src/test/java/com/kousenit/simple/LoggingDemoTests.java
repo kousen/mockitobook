@@ -8,15 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
 public class LoggingDemoTests {
-    private final Logger logger = Logger.getLogger(LoggingDemoTests.class.getName());
-
-    @Test
-    public void testLog() {
-        LoggingDemo demo = new LoggingDemo(logger);
-        assertDoesNotThrow(() -> demo.doStuff("Hello, world!"));
-
-        // Nothing to test, because both doStuff and info methods return void
-    }
+    private final Logger logger =
+            Logger.getLogger(LoggingDemoTests.class.getName());
 
     @Test
     public void testLogWithSpy() {
@@ -29,9 +22,19 @@ public class LoggingDemoTests {
         // Invoke the method to test
         demo.doStuff("Hello, world!");
 
-        // Verify that the info method of the logger was called exactly once
+        // Verify that the info method of the logger was called
         verify(spy).info("Hello, world!");
-        // verify(spy, times(1)).info("Hello, world!");
     }
+
+    @Test
+    public void testLog() {
+        LoggingDemo demo = new LoggingDemo(logger);
+        assertDoesNotThrow(
+                () -> demo.doStuff("Hello, world!"));
+
+        // Nothing to test, because both
+        //      doStuff and info methods return void
+    }
+
 
 }

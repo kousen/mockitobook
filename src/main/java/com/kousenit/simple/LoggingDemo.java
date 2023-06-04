@@ -10,7 +10,7 @@ public class LoggingDemo {
     }
 
     public void doStuff(String message) {
-        System.out.println("Doing useful stuff with: " + message);
+        System.out.printf("Doing useful stuff: %s%n", message);
         logger.info(message);
     }
 }
