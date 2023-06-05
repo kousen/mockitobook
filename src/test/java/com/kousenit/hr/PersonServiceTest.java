@@ -184,7 +184,8 @@ public class PersonServiceTest {
     @Test
     public void saveAllPeople_usingAdditionalAnswers() {
         // set the expectations on the mock
-        when(repository.save(any(Person.class))).thenAnswer(returnsFirstArg());
+        when(repository.save(any(Person.class)))
+                .thenAnswer(returnsFirstArg());
 
         // invoke the test method
         List<Integer> ids = service.savePeople(people.toArray(Person[]::new));
