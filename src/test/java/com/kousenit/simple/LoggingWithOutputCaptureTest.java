@@ -18,7 +18,7 @@ public class LoggingWithOutputCaptureTest {
         demo.doStuff("Hello, world!");
 
         assertThat(outputCapture.getOut())
-                .contains("Doing useful stuff with: Hello, world!");
+                .contains("Doing useful stuff: Hello, world!");
         assertThat(outputCapture.getErr())
                 .contains("INFO: Hello, world!");
     }

@@ -22,7 +22,7 @@ public class LoggingStandardErrorTests {
 
         demo.doStuff("Hello, world!");
 
-        assertThat(out.toString()).contains("Doing useful stuff with: Hello, world!");
+        assertThat(out.toString()).contains("Doing useful stuff: Hello, world!");
         assertThat(err.toString()).contains("INFO: Hello, world!");
 
         System.setOut(System.out);
