@@ -86,13 +86,20 @@ class AstroServiceTest {
         when(gateway.getResponse()).thenThrow(
                 new RuntimeException(new IOException("Network problems")));
 
-        // Check the exception thrown by the method under test (AssertJ)
+        // Check the exception (JUnit 5, which isn't bad)
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> service.getAstroData());
+        Throwable cause = exception.getCause();
+        assertAll(
+                () -> assertEquals(IOException.class, cause.getClass()),
+                () -> assertEquals("Network problems", cause.getMessage())
+        );
+
+        // Check the exception (AssertJ, which is way, way better :)
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> service.getAstroData())
-                .withCauseInstanceOf(IOException.class)
+                .withCauseExactlyInstanceOf(IOException.class)
                 .withMessageContaining("Network problems");
-
-        verify(gateway).getResponse();
     }
 
     // Check network failure
