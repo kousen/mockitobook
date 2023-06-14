@@ -1,6 +1,7 @@
 // Using Gradle version catalogs -- see gradle/libs.versions.toml
 plugins {
     id 'java'
+    id 'jacoco'
     alias(libs.plugins.versions)
     alias(libs.plugins.version.catalog.update)
 }
@@ -47,3 +48,5 @@ tasks.named('test',Test) {
     useJUnitPlatform()
     maxParallelForks = (int) (Runtime.runtime.availableProcessors() / 2 + 1)
 }
+
+jacocoTestReport.dependsOn(test)
