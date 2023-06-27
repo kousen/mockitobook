@@ -74,7 +74,7 @@ class PublisherTest {
         // Check for specific string pattern
         verify(sub1, times(2)).onNext(
                 argThat(s -> s.matches("Message \\d")));
-        verify(sub1, times(2)).onNext(
+        verify(sub2, times(2)).onNext(
                 argThat(s -> s.matches("Message \\d")));
 
         // Simpler, without custom matcher

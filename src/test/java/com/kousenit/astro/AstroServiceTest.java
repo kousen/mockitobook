@@ -87,8 +87,8 @@ class AstroServiceTest {
                 new RuntimeException(new IOException("Network problems")));
 
         // Check the exception (JUnit 5, which isn't bad)
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> service.getAstroData());
+        RuntimeException exception =
+                assertThrows(RuntimeException.class, () -> service.getAstroData());
         Throwable cause = exception.getCause();
         assertAll(
                 () -> assertEquals(IOException.class, cause.getClass()),
@@ -171,8 +171,9 @@ class AstroServiceTest {
         Map<String, Long> astroData = service.getAstroData();
 
         // Check the results from the method under test
-        assertThat(astroData).containsOnlyKeys("USS Voyager", "Jupiter 2",
-                "Babylon 5", "Rocinante", "Nostromo");
+        assertThat(astroData)
+                .containsOnlyKeys("USS Voyager", "Jupiter 2",
+                        "Babylon 5", "Rocinante", "Nostromo");
         assertThat(astroData.get("USS Voyager")).isEqualTo(2);
         assertThat(astroData.get("Jupiter 2")).isEqualTo(1);
         assertThat(astroData.get("Babylon 5")).isEqualTo(1);
