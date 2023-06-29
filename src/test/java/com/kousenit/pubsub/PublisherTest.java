@@ -29,11 +29,12 @@ class PublisherTest {
 
     @Test
     void handleMisbehavingSubscribers() {
-        // Does not compile:
+        // Does not compile (because onNext returns void):
         // when(sub1.onNext(anyString())).thenThrow(new RuntimeException("Oops"));
 
         // sub1 throws an exception
         doThrow(RuntimeException.class).when(sub1).onNext(anyString());
+        doNothing().when(sub2).onNext(anyString()); // legal, but redundant (it's the default)
 
         pub.send("message 1");
         pub.send("message 2");
@@ -44,7 +45,7 @@ class PublisherTest {
     }
 
     @Test
-    void testSendInOrder() {
+    void testSendInOrder() {  // Is this a good idea?? Overspecifying the implementation
         pub.send("Hello");
 
         InOrder inorder = inOrder(sub1, sub2);
@@ -75,7 +76,7 @@ class PublisherTest {
         verify(sub1, times(2)).onNext(
                 argThat(s -> s.matches("Message \\d")));
         verify(sub2, times(2)).onNext(
-                argThat(s -> s.matches("Message \\d")));
+                argThat(s -> s.matches("Message [1-2]")));
 
         // Simpler, without custom matcher
         verify(sub1, times(2)).onNext(matches("Message \\d"));
