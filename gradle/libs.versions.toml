@@ -2,9 +2,9 @@
 assertj = "3.24.2"
 gson = "2.10.1"
 jackson = "2.15.2"
-junit = "5.10.0-M1"
-junit-platform = "1.10.0-M1"
-mockito = "5.4.0"
+junit = "5.10.0"
+junit-platform = "1.10.0"
+mockito = "5.5.0"
 retrofit = "2.9.0"
 
 [libraries]
@@ -31,5 +31,5 @@ mockito = [
 ]
 
 [plugins]
-version-catalog-update = "nl.littlerobots.version-catalog-update:0.8.0"
+version-catalog-update = "nl.littlerobots.version-catalog-update:0.8.1"
 versions = "com.github.ben-manes.versions:0.47.0"
