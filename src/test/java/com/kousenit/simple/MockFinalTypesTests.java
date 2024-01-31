@@ -1,7 +1,7 @@
 package com.kousenit.simple;
 
-import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
