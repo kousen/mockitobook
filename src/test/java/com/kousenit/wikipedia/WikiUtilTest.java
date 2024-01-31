@@ -18,7 +18,6 @@ class WikiUtilTest {
     void getResponseNotFound() {
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> WikiUtil.getWikipediaExtract("Not a real page"))
-                .havingCause()
-                .withMessageContaining("Not a real page");
+                .withMessageContaining("Page not found");
     }
 }

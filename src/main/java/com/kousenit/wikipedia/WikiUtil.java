@@ -50,6 +50,9 @@ public class WikiUtil {
         ObjectMapper mapper = new ObjectMapper();
         WikiResponse json = mapper.readValue(response.body(), WikiResponse.class);
         WikiPage page = json.getQuery().getPages().get(0);
+        if (page.getExtract() == null) {
+            throw new RuntimeException("Page not found");
+        }
         return Map.of(page.getTitle(), page.getExtract()).toString();
     }
 }

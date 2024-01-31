@@ -12,7 +12,7 @@ version '1.0'
 // Java 11+ needed for HttpClient
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -31,7 +31,7 @@ dependencies {
     testImplementation libs.assertj
 
     // Spring test library (don't move to 3.* unless Java 17+)
-    testImplementation 'org.springframework.boot:spring-boot-test:2.7.11'
+    testImplementation 'org.springframework.boot:spring-boot-test:3.2.2'
 
     // Retrofit
     implementation libs.retrofit.core

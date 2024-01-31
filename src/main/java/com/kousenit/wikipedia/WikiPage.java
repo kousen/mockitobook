@@ -10,6 +10,8 @@ public class WikiPage {
     private int ns;
     private String title;
     private String extract;
+    @JsonIgnore
+    private boolean missing;
 
     public int getPageid() {
         return pageid;
@@ -43,6 +45,14 @@ public class WikiPage {
         this.extract = extract;
     }
 
+    public boolean getMissing() {
+        return missing;
+    }
+
+    public void setMissing(boolean missing) {
+        this.missing = missing;
+    }
+
     @Override
     public String toString() {
         return "WikiPage{" +
@@ -50,6 +60,7 @@ public class WikiPage {
                 ", ns=" + ns +
                 ", title='" + title + '\'' +
                 ", extract='" + extract + '\'' +
+                ", missing=" + missing +
                 '}';
     }
 }
