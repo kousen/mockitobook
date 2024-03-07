@@ -1,10 +1,10 @@
 [versions]
-assertj = "3.25.2"
+assertj = "3.25.3"
 gson = "2.10.1"
-jackson = "2.16.1"
-junit = "5.10.1"
-junit-platform = "1.10.1"
-mockito = "5.10.0"
+jackson = "2.17.0-rc1"
+junit = "5.10.2"
+junit-platform = "1.10.2"
+mockito = "5.11.0"
 retrofit = "2.9.0"
 
 [libraries]

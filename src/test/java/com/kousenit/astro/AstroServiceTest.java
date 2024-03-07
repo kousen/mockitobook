@@ -173,12 +173,12 @@ class AstroServiceTest {
         // Check the results from the method under test
         assertThat(astroData)
                 .containsOnlyKeys("USS Voyager", "Jupiter 2",
-                        "Babylon 5", "Rocinante", "Nostromo");
-        assertThat(astroData.get("USS Voyager")).isEqualTo(2);
-        assertThat(astroData.get("Jupiter 2")).isEqualTo(1);
-        assertThat(astroData.get("Babylon 5")).isEqualTo(1);
-        assertThat(astroData.get("Rocinante")).isEqualTo(2);
-        assertThat(astroData.get("Nostromo")).isEqualTo(1);
+                        "Babylon 5", "Rocinante", "Nostromo")
+                .containsEntry("USS Voyager", 2L)
+                .containsEntry("Jupiter 2", 1L)
+                .containsEntry("Babylon 5", 1L)
+                .containsEntry("Rocinante", 2L)
+                .containsEntry("Nostromo", 1L);
     }
 
     // Unit test with mock Gateway using mock(Gateway.class)
