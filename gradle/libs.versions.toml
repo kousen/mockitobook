@@ -1,11 +1,11 @@
 [versions]
 assertj = "3.25.3"
 gson = "2.10.1"
-jackson = "2.17.0-rc1"
+jackson = "2.17.0"
 junit = "5.10.2"
 junit-platform = "1.10.2"
 mockito = "5.11.0"
-retrofit = "2.9.0"
+retrofit = "2.11.0"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
