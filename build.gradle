@@ -37,6 +37,9 @@ dependencies {
     implementation libs.retrofit.core
     implementation libs.retrofit.gson
 
+    // Make security warning go away for retrofit transitive dep
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
     // Jackson JSON library
     implementation libs.jackson
 
