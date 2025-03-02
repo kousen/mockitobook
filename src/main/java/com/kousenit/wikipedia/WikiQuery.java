@@ -13,4 +13,11 @@ public class WikiQuery {
     public void setPages(List<WikiPage> pages) {
         this.pages = pages;
     }
+    
+    @Override
+    public String toString() {
+        return "WikiQuery{" +
+                "pages=" + pages +
+                '}';
+    }
 }

@@ -62,6 +62,28 @@ class PublisherTest {
         inorder.verify(sub1).onNext("Hello");
         inorder.verify(sub2).onNext("Hello");
     }
+    
+    @Test
+    void testSendParallel_withoutOrderVerification() {
+        pub.sendParallel("Hello");
+        
+        // Verify both subscribers received the message (without order verification)
+        verify(sub1).onNext("Hello");
+        verify(sub2).onNext("Hello");
+    }
+    
+    @Test
+    void testSendParallel_withException() {
+        // Configure sub1 to throw an exception
+        doThrow(RuntimeException.class).when(sub1).onNext(anyString());
+        
+        // Call should not throw the exception outside the method
+        pub.sendParallel("Message");
+        
+        // Verify both subscribers were called
+        verify(sub1).onNext("Message");
+        verify(sub2).onNext("Message");
+    }
 
     @Test
     void publisherSendsMessageWithAPattern() {

@@ -20,4 +20,12 @@ public class WikiResponse {
     public void setQuery(WikiQuery query) {
         this.query = query;
     }
+    
+    @Override
+    public String toString() {
+        return "WikiResponse{" +
+                "batchcomplete=" + batchcomplete +
+                ", query=" + query +
+                '}';
+    }
 }
