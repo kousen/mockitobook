@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class WikiUtil {
+    static final String USER_AGENT = "mockitobook/1.0 (https://github.com/kousen/mockitobook)";
+    static final String ACCEPT = "application/json";
+
     public static String getWikipediaExtract(String title) {
         String base = "https://en.wikipedia.org/w/api.php";
         Map<String, String> params = Map.ofEntries(
@@ -39,11 +42,17 @@ public class WikiUtil {
 
     private static String getResponse(String url) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest request = buildRequest(url);
+        return parseResponse(client.send(request, HttpResponse.BodyHandlers.ofString()));
+    }
+
+    static HttpRequest buildRequest(String url) {
+        return HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .timeout(Duration.ofSeconds(2))
+                .header("User-Agent", USER_AGENT)
+                .header("Accept", ACCEPT)
                 .build();
-        return parseResponse(client.send(request, HttpResponse.BodyHandlers.ofString()));
     }
 
     private static String parseResponse(HttpResponse<String> response) throws JsonProcessingException {
